@@ -19,6 +19,10 @@ FluentAssertions.5.10.3/
 FluentAssertions.dll.meta
 CodeCoverage/
 CodeCoverage.meta
+[Mm]aterials/
+[Mm]aterials.meta
+Thirdparty/
+Thirdparty.meta
 
 # Asset meta data should only be ignored when the corresponding asset is also ignored
 !/[Aa]ssets/**/*.meta
