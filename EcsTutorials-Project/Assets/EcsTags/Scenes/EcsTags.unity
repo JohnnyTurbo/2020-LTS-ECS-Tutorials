@@ -1036,8 +1036,8 @@ GameObject:
   - component: {fileID: 635758132}
   - component: {fileID: 635758131}
   - component: {fileID: 635758130}
-  - component: {fileID: 635758129}
   - component: {fileID: 635758134}
+  - component: {fileID: 635758129}
   m_Layer: 0
   m_Name: RedCube
   m_TagString: Untagged
@@ -2194,8 +2194,8 @@ GameObject:
   - component: {fileID: 1840363502}
   - component: {fileID: 1840363501}
   - component: {fileID: 1840363500}
-  - component: {fileID: 1840363499}
   - component: {fileID: 1840363504}
+  - component: {fileID: 1840363499}
   m_Layer: 0
   m_Name: RedCube
   m_TagString: Untagged
@@ -2425,8 +2425,8 @@ GameObject:
   - component: {fileID: 1882393082}
   - component: {fileID: 1882393081}
   - component: {fileID: 1882393080}
-  - component: {fileID: 1882393079}
   - component: {fileID: 1882393084}
+  - component: {fileID: 1882393079}
   m_Layer: 0
   m_Name: RedCube
   m_TagString: Untagged
@@ -2640,8 +2640,8 @@ GameObject:
   - component: {fileID: 2029307945}
   - component: {fileID: 2029307944}
   - component: {fileID: 2029307943}
-  - component: {fileID: 2029307942}
   - component: {fileID: 2029307947}
+  - component: {fileID: 2029307942}
   m_Layer: 0
   m_Name: RedCube
   m_TagString: Untagged

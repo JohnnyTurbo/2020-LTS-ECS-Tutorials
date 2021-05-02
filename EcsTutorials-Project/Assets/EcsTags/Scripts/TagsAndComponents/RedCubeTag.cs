@@ -3,5 +3,5 @@
 namespace TMG.Tags
 {
     [GenerateAuthoringComponent]
-    public struct RedSphereTag : IComponentData {}
+    public struct RedCubeTag : IComponentData {}
 }
