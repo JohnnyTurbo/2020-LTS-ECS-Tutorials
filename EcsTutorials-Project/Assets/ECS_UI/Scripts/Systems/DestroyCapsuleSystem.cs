@@ -24,9 +24,9 @@ namespace TMG.ECS_UI
         protected override void OnUpdate()
         {
             var ecb = _endSimulationEntityCommandBufferSystem.CreateCommandBuffer();
-            Entities.WithAll<DestroyCapsuleTag>().ForEach((Entity e) =>
+            Entities.WithAll<DestroyCapsuleTag>().ForEach((Entity e, HealthBarUIData healthBarUIData) =>
             {
-                var slider = EntityManager.GetComponentData<HealthBarUIData>(e).Slider;
+                var slider = healthBarUIData.Slider;
                 HealthBarPooling.Instance.ReturnSlider(slider);
 
                 ecb.DestroyEntity(e);

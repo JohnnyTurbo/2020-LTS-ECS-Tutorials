@@ -1,4 +1,5 @@
 ﻿using Unity.Entities;
+using UnityEngine.UI;
 
 namespace TMG.ECS_UI
 {
