@@ -20,17 +20,18 @@ namespace TMG.ECS_UI
             {
                 var newEntity = EntityManager.Instantiate(_spawnCapsuleData.EntityPrefab);
                 
-                Translation newTranslation = new Translation()
+                var newTranslation = new Translation()
                 {
                     Value = _spawnCapsuleData.Random.NextFloat3(_spawnCapsuleData.MinSpawnPosition,
                         _spawnCapsuleData.MaxSpawnPosition)
                 };
-                
                 EntityManager.SetComponentData(newEntity, newTranslation);
+
+                var newHealthBarUI = EntityManager.GetComponentData<HealthBarUIData>(newEntity);
+                newHealthBarUI.Slider = HealthBarPooling.Instance.GetNextSlider();
+                
                 _spawnCapsuleData.SpawnTimer = _spawnCapsuleData.SpawnInterval;
             }
-            
-            SetSingleton(_spawnCapsuleData);
         }
     }
 }

@@ -1,12 +1,14 @@
-﻿using Unity.Entities;
+﻿using Unity.Collections;
+using Unity.Entities;
 
 namespace TMG.ECS_UI
 {
+    [UpdateAfter(typeof(BeginSimulationEntityCommandBufferSystem))]
     public class ApplyRadiationSystem : SystemBase
     {
         private EndSimulationEntityCommandBufferSystem _endSimulationEntityCommandBufferSystem;
-
-        protected override void OnCreate()
+        
+        protected override void OnStartRunning()
         {
             RequireSingletonForUpdate<RadiationTag>();
             _endSimulationEntityCommandBufferSystem = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
@@ -16,18 +18,18 @@ namespace TMG.ECS_UI
         {
             var ecb = _endSimulationEntityCommandBufferSystem.CreateCommandBuffer().AsParallelWriter();
             var deltaTime = Time.DeltaTime;
-            Entities.ForEach((Entity e, int entityInQueryIndex, ref TimeToLiveData timeToLive) =>
+            
+            Entities.ForEach((Entity e, int entityInQueryIndex, ref TimeToLiveData timeToLiveData) =>
             {
-                timeToLive.Value -= deltaTime;
+                timeToLiveData.Value -= deltaTime;
 
-                if (timeToLive.Value <= 0)
+                if (timeToLiveData.Value <= 0)
                 {
-                    ecb.DestroyEntity(entityInQueryIndex, e);
+                    ecb.AddComponent(entityInQueryIndex, e, new DestroyCapsuleTag());
                 }
-                
             }).ScheduleParallel();
             
-            _endSimulationEntityCommandBufferSystem.AddJobHandleForProducer(Dependency);
+            Dependency.Complete();
         }
     }
 }

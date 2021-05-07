@@ -14,7 +14,8 @@ GameObject:
   - component: {fileID: 2753680056875244094}
   - component: {fileID: 2753680056875244095}
   - component: {fileID: 2753680056875244032}
-  - component: {fileID: 2753680056875244090}
+  - component: {fileID: 7449587268013203598}
+  - component: {fileID: 1857972787407435410}
   m_Layer: 0
   m_Name: Capsule
   m_TagString: Untagged
@@ -128,7 +129,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 0
---- !u!114 &2753680056875244090
+--- !u!114 &7449587268013203598
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -137,7 +138,25 @@ MonoBehaviour:
   m_GameObject: {fileID: 2753680056875244033}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 436592e02e9245bfb380ecb9a1bea4fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 7d9376f9702c8f24aa5c7d39509f1ccb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  InitialValue: 5
   Value: 5
+--- !u!114 &1857972787407435410
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2753680056875244033}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ef7ba091aa542aeaf10f38cf3cdd777, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Slider: {fileID: 2784899031185875716, guid: d2b085116150ae54b9b60ba25926282f, type: 3}
+  Offset:
+    x: 0
+    y: 2
+    z: 0

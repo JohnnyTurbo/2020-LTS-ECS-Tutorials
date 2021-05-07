@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 9209598019636569412}
   - component: {fileID: 9209598019636569413}
   - component: {fileID: -2118476204255259797}
-  - component: {fileID: -7920046252122314823}
+  - component: {fileID: -2277524530815466730}
   m_Layer: 0
   m_Name: RadiationSphere
   m_TagString: Untagged
@@ -96,7 +96,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 0
---- !u!114 &-7920046252122314823
+--- !u!114 &-2277524530815466730
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -105,6 +105,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 9209598019636569411}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4d53710c41da4654ad7acc69c612d57a, type: 3}
+  m_Script: {fileID: 11500000, guid: a83eed087989985458175402c50752c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
