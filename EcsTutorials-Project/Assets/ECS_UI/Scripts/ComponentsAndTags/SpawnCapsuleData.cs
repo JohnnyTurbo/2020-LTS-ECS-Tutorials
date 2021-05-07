@@ -9,8 +9,14 @@ namespace TMG.ECS_UI
         public float SpawnInterval;
         public float SpawnTimer;
         public Entity EntityPrefab;
-        public Random Random;
+        
+        #region Spawn Position Stuff - Ignore For Now
+        
         public float3 MinSpawnPosition;
         public float3 MaxSpawnPosition;
+        public Random Random;
+        public float3 RandomSpawnPos => Random.NextFloat3(MinSpawnPosition, MaxSpawnPosition);
+        
+        #endregion
     }
 }

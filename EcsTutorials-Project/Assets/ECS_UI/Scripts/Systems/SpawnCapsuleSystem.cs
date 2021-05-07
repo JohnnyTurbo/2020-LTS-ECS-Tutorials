@@ -22,8 +22,7 @@ namespace TMG.ECS_UI
                 
                 var newTranslation = new Translation()
                 {
-                    Value = _spawnCapsuleData.Random.NextFloat3(_spawnCapsuleData.MinSpawnPosition,
-                        _spawnCapsuleData.MaxSpawnPosition)
+                    Value = _spawnCapsuleData.RandomSpawnPos
                 };
                 EntityManager.SetComponentData(newEntity, newTranslation);
 

@@ -11,6 +11,7 @@ namespace TMG.ECS_Singletons
         public GameObject CapsulePrefab;
         public Vector3 MinSpawnPosition;
         public Vector3 MaxSpawnPosition;
+        public KeyCode FunKey;
         
         public void DeclareReferencedPrefabs(List<GameObject> referencedPrefabs)
         {
@@ -24,6 +25,7 @@ namespace TMG.ECS_Singletons
                 SpawnInterval = SpawnInterval,
                 SpawnTimer = SpawnInterval,
                 EntityPrefab = conversionSystem.GetPrimaryEntity(CapsulePrefab),
+                FunKey = FunKey,
                 Random = Random.CreateFromIndex(0),
                 MinSpawnPosition = MinSpawnPosition,
                 MaxSpawnPosition = MaxSpawnPosition

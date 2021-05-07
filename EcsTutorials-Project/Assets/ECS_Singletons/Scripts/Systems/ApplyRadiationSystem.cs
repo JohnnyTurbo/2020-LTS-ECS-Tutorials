@@ -27,7 +27,7 @@ namespace TMG.ECS_Singletons
                 
             }).ScheduleParallel();
             
-            _endSimulationEntityCommandBufferSystem.AddJobHandleForProducer(Dependency);
+            Dependency.Complete();
         }
     }
 }
