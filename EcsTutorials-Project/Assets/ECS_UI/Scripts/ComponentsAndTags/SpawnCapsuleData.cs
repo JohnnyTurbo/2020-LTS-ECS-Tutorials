@@ -14,7 +14,7 @@ namespace TMG.ECS_UI
         
         public float3 MinSpawnPosition;
         public float3 MaxSpawnPosition;
-        public Random Random;
+        public Unity.Mathematics.Random Random;
         public float3 RandomSpawnPos => Random.NextFloat3(MinSpawnPosition, MaxSpawnPosition);
         
         #endregion

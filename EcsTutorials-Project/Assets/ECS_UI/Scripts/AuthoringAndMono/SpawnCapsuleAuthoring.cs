@@ -24,7 +24,7 @@ namespace TMG.ECS_UI
                 SpawnInterval = SpawnInterval,
                 SpawnTimer = SpawnInterval,
                 EntityPrefab = conversionSystem.GetPrimaryEntity(CapsulePrefab),
-                Random = Random.CreateFromIndex(0),
+                Random = Unity.Mathematics.Random.CreateFromIndex(0),
                 MinSpawnPosition = MinSpawnPosition,
                 MaxSpawnPosition = MaxSpawnPosition
             };
