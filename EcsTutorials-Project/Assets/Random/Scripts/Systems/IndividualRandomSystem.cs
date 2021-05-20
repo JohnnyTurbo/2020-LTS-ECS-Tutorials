@@ -12,7 +12,6 @@ namespace TMG.ECS_Random
         {
             Entities.ForEach((Entity e, int entityInQueryIndex, ref IndividualRandomData randomData) =>
             {
-                //randomData.Value.InitState(120); //Cannot use with entityInQueryIndex!
                 randomData.Value = Random.CreateFromIndex((uint)entityInQueryIndex);
             }).ScheduleParallel();
         }
@@ -23,11 +22,10 @@ namespace TMG.ECS_Random
             if (Input.GetKeyDown(KeyCode.I))
             {
                 Entities
-                    .ForEach((ref Translation translation, ref Rotation rotation, ref IndividualRandomData randomData) =>
+                    .ForEach((ref Translation translation, ref IndividualRandomData randomData, ref Rotation rot) =>
                     {
-                        //translation.Value.x = randomData.Value.NextFloat(0, 25f);
-                        rotation.Value = randomData.Value.NextQuaternionRotation();
                         translation.Value = randomData.NextPosition;
+                        rot.Value = randomData.Value.NextQuaternionRotation();
                     }).ScheduleParallel();
             }
         }
