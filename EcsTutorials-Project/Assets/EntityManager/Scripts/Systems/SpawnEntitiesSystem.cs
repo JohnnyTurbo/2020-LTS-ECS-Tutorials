@@ -1,7 +1,5 @@
-﻿using Unity.Collections;
-using Unity.Entities;
+﻿using Unity.Entities;
 using Unity.Mathematics;
-using Unity.Rendering;
 using Unity.Transforms;
 using UnityEngine;
 
@@ -14,7 +12,6 @@ namespace TMG.ECS_EntityManager
         protected override void OnStartRunning()
         {
             var entitySpawnData = GetSingleton<EntitySpawnData>();
-            
             var gridSize = entitySpawnData.SpawnGrid;
             _entitySpacing = entitySpawnData.EntitySpacing;
 
@@ -23,7 +20,9 @@ namespace TMG.ECS_EntityManager
                 for (int y = 0; y < gridSize.y; y++)
                 {
                     var newEntity = EntityManager.Instantiate(entitySpawnData.EntityPrefab);
+                    
                     var newPosition = new LocalToWorld {Value = CalculateTransform(x, y)};
+
                     EntityManager.SetComponentData(newEntity, newPosition);
 
                     if ((x + y) % 2 == 0)
@@ -48,8 +47,8 @@ namespace TMG.ECS_EntityManager
         {
             if (Input.GetKeyDown(KeyCode.D))
             {
-                var oscillators = EntityManager.CreateEntityQuery(typeof(OscillatingTag));
-                EntityManager.DestroyEntity(oscillators);
+                var oscillatorQuery = EntityManager.CreateEntityQuery(typeof(OscillatingTag));
+                EntityManager.DestroyEntity(oscillatorQuery);
             }
 
             if (Input.GetKeyDown(KeyCode.A))
