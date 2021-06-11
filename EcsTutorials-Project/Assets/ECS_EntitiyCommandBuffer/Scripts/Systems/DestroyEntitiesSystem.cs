@@ -14,13 +14,12 @@ namespace TMG.ECS_CommandBuffer
 
         protected override void OnUpdate()
         {
-            var ecb = _endSimulationEntityCommandBufferSystem.CreateCommandBuffer();
             if (Input.GetKeyDown(KeyCode.D))
             {
-                var capsules = EntityManager.CreateEntityQuery(typeof(CapsuleTag));
-                ecb.DestroyEntitiesForEntityQuery(capsules);
+                var ecb = _endSimulationEntityCommandBufferSystem.CreateCommandBuffer();
+                var capsuleQuery = EntityManager.CreateEntityQuery(typeof(CapsuleTag));
+                ecb.DestroyEntity(capsuleQuery);
             }
-            _endSimulationEntityCommandBufferSystem.AddJobHandleForProducer(this.Dependency);
         }
     }
 }

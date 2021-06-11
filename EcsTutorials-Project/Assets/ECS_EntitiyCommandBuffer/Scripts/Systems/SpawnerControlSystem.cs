@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace TMG.ECS_CommandBuffer
 {
+    [UpdateInGroup(typeof(InitializationSystemGroup))]
     public class SpawnerControlSystem : SystemBase
     {
         private EndInitializationEntityCommandBufferSystem _endInitializationEntityCommandBufferSystem;

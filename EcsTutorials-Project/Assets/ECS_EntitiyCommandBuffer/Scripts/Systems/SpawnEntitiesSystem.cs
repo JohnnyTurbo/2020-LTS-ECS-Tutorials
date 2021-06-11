@@ -29,6 +29,7 @@ namespace TMG.ECS_CommandBuffer
                     ecb.SetComponent(entityInQueryIndex, newEntity, translation);
                 }
             }).ScheduleParallel();
+            Dependency.Complete(); // Runs job right then and there. Creates additional sync point
             _endSimulationEntityCommandBufferSystem.AddJobHandleForProducer(this.Dependency);
         }
     }
