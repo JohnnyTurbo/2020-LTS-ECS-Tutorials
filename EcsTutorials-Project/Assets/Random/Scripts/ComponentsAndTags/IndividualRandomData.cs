@@ -1,4 +1,5 @@
-﻿using Unity.Entities;
+﻿using Unity.Mathematics;
+using Unity.Entities;
 using Random = Unity.Mathematics.Random;
 
 namespace TMG.ECS_Random
@@ -7,5 +8,9 @@ namespace TMG.ECS_Random
     public struct IndividualRandomData : IComponentData
     {
         public Random Value;
+        
+        public float3 MinimumPosition;
+        public float3 MaximumPosition;
+        public float3 NextPosition => Value.NextFloat3(MinimumPosition, MaximumPosition);
     }
 }

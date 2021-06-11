@@ -27,8 +27,6 @@ namespace TMG.ECS_Random
                     {
                         translation.Value.x = capturedRandom.Value.NextFloat(0, 25f);
                     }).ScheduleParallel();
-                
-                Dependency.Complete();
                 SetSingleton(capturedRandom);
             }
         }

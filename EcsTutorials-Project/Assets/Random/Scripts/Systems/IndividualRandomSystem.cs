@@ -21,9 +21,11 @@ namespace TMG.ECS_Random
         {
             if (Input.GetKeyDown(KeyCode.I))
             {
-                Entities.ForEach((ref Translation translation, ref IndividualRandomData randomData) =>
+                Entities
+                    .ForEach((ref Translation translation, ref IndividualRandomData randomData, ref Rotation rot) =>
                     {
-                        translation.Value.x = randomData.Value.NextFloat(0, 25f);
+                        translation.Value = randomData.NextPosition;
+                        rot.Value = randomData.Value.NextQuaternionRotation();
                     }).ScheduleParallel();
             }
         }
