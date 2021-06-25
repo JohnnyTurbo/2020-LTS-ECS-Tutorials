@@ -8,5 +8,6 @@ namespace TMG.ConnectFour
     {
         public Material RedMaterial;
         public Material BlueMaterial;
+        public Material YellowMaterial;
     }
 }

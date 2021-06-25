@@ -6,23 +6,29 @@ using UnityEngine;
 
 namespace TMG.ConnectFour
 {
+    public enum ConnectFourColor {None = 0, Red = 1, Blue = 2}
+    
     public class SpawnPieceSystem : SystemBase
     {
         private PieceSpawnData _spawnData;
         private PieceMaterialData _materialData;
-        
+        private Entity _gameControllerEntity;
+
         protected override void OnStartRunning()
         {
             RequireSingletonForUpdate<PieceSpawnData>();
             _spawnData = GetSingleton<PieceSpawnData>();
-            var spawnEntity = GetSingletonEntity<PieceSpawnData>();
-            _materialData = EntityManager.GetComponentData<PieceMaterialData>(spawnEntity);
+            _gameControllerEntity = GetSingletonEntity<PieceSpawnData>();
+            _materialData = EntityManager.GetComponentData<PieceMaterialData>(_gameControllerEntity);
             _spawnData.IsRedTurn = true;
         }
 
         protected override void OnUpdate()
         {
             var spawnCol = -1;
+
+            #region Region_GetPlayerInput
+
             if (Input.GetKeyDown(KeyCode.Alpha1))
             {
                 spawnCol = 0;
@@ -52,10 +58,12 @@ namespace TMG.ConnectFour
                 spawnCol = 6;
             }
 
+            #endregion
+
             if (spawnCol == -1) return;
 
             var newHorizontalPosition = new HorizontalPosition {Value = spawnCol};
-            
+
             var highestPosition = -1;
 
             Entities
@@ -67,17 +75,15 @@ namespace TMG.ConnectFour
                         highestPosition = verticalPosition.Value;
                     }
                 }).Run();
-
-            Debug.Log($"High: {highestPosition}");
-
-            if(highestPosition >= 5) return;
             
+            if (highestPosition >= 5) return;
+
             var newPieceEntity = EntityManager.Instantiate(_spawnData.Prefab);
 
             EntityManager.AddSharedComponentData(newPieceEntity, newHorizontalPosition);
 
             var newVerticalPosition = new VerticalPosition {Value = highestPosition + 1};
-            
+
             EntityManager.SetComponentData(newPieceEntity, newVerticalPosition);
 
             var newPosition = new Translation
@@ -89,15 +95,87 @@ namespace TMG.ConnectFour
                     z = 0f
                 }
             };
-            
+
             EntityManager.SetComponentData(newPieceEntity, newPosition);
 
-            var newMaterial = _spawnData.IsRedTurn ? _materialData.RedMaterial : _materialData.BlueMaterial;
+            var gameOver = false;
 
+            if (_spawnData.IsRedTurn)
+            {
+                SetPieceColor(newPieceEntity, _materialData.RedMaterial);
+                gameOver = CheckForWin(newHorizontalPosition, ConnectFourColor.Red);
+            }
+            else
+            {
+                SetPieceColor(newPieceEntity, _materialData.BlueMaterial);
+                gameOver = CheckForWin(newHorizontalPosition, ConnectFourColor.Blue);
+            }
+
+            if (gameOver)
+            {
+                Debug.Log("you won");
+                EntityManager.RemoveComponent<PieceSpawnData>(_gameControllerEntity);
+            }
+            else
+            {
+                Debug.Log("Still goin");
+                _spawnData.IsRedTurn = !_spawnData.IsRedTurn;
+            }
+        }
+
+        private void SetPieceColor(Entity newPieceEntity, Material pieceMaterial)
+        {
             var curMaterial = EntityManager.GetSharedComponentData<RenderMesh>(newPieceEntity);
-            curMaterial.material = newMaterial;
+            curMaterial.material = pieceMaterial;
             EntityManager.SetSharedComponentData(newPieceEntity, curMaterial);
-            _spawnData.IsRedTurn = !_spawnData.IsRedTurn;
+        }
+
+        private bool CheckForWin(HorizontalPosition columnFilter, ConnectFourColor curTurn)
+        {
+            var pieceActive = new ConnectFourColor[6];
+            Entities
+                .WithSharedComponentFilter(columnFilter)
+                .ForEach((Entity newPieceEntity, in VerticalPosition y, in RenderMesh renderMesh) =>
+                {
+                    if(renderMesh.material == _materialData.RedMaterial)
+                    {
+                        pieceActive[y.Value] = ConnectFourColor.Red;
+                    }
+                    else if(renderMesh.material == _materialData.BlueMaterial)
+                    {
+                        pieceActive[y.Value] = ConnectFourColor.Blue;
+                    }
+                    else
+                    {
+                        pieceActive[y.Value] = ConnectFourColor.None;
+                    }
+                }).WithoutBurst().Run();
+            
+            var lowestWinningPiece = -1;
+            for (var i = 0; i < 3; i++)
+            {
+                if (pieceActive[i] == curTurn && 
+                    pieceActive[i + 1] == curTurn && 
+                    pieceActive[i + 2] == curTurn &&
+                    pieceActive[i + 3] == curTurn)
+                {
+                    lowestWinningPiece = i;
+                }
+            }
+            if(lowestWinningPiece == -1 ) return false;
+            
+            Entities
+                .WithSharedComponentFilter(columnFilter)
+                .WithStructuralChanges()
+                .ForEach((Entity winningPieceEntity, RenderMesh renderMesh, in VerticalPosition y) =>
+                {
+                    if (y.Value >= lowestWinningPiece)
+                    {
+                        renderMesh.material = _materialData.YellowMaterial;
+                        EntityManager.SetSharedComponentData(winningPieceEntity, renderMesh);
+                    }
+                }).WithoutBurst().Run();
+            return true;
         }
     }
 }

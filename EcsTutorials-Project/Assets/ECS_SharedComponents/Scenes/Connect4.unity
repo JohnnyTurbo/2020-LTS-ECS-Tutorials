@@ -228,6 +228,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RedMaterial: {fileID: 2100000, guid: 5acaf6683108e1344ac3842aee37b25f, type: 2}
   BlueMaterial: {fileID: 2100000, guid: bf188b6d6fcc4fd4a94479c946962965, type: 2}
+  YellowMaterial: {fileID: 2100000, guid: 6d8b53aae51006a49a580a6978c717eb, type: 2}
 --- !u!1 &930463854
 GameObject:
   m_ObjectHideFlags: 0
