@@ -127,9 +127,9 @@ namespace TMG.ConnectFour
 
         private void SetPieceColor(Entity newPieceEntity, Material pieceMaterial)
         {
-            var curMaterial = EntityManager.GetSharedComponentData<RenderMesh>(newPieceEntity);
-            curMaterial.material = pieceMaterial;
-            EntityManager.SetSharedComponentData(newPieceEntity, curMaterial);
+            var renderMesh = EntityManager.GetSharedComponentData<RenderMesh>(newPieceEntity);
+            renderMesh.material = pieceMaterial;
+            EntityManager.SetSharedComponentData(newPieceEntity, renderMesh);
         }
 
         private bool CheckForWin(HorizontalPosition columnFilter, ConnectFourColor curTurn)
