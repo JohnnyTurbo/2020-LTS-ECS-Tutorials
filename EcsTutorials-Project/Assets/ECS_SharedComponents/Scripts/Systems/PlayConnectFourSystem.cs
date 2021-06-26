@@ -1,4 +1,5 @@
-﻿using Unity.Entities;
+﻿using Unity.Collections;
+using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Rendering;
 using Unity.Transforms;
@@ -8,7 +9,7 @@ namespace TMG.ConnectFour
 {
     public enum ConnectFourColor {None = 0, Red = 1, Blue = 2}
     
-    public class SpawnPieceSystem : SystemBase
+    public class PlayConnectFourSystem : SystemBase
     {
         private PieceSpawnData _spawnData;
         private PieceMaterialData _materialData;
@@ -17,52 +18,53 @@ namespace TMG.ConnectFour
         protected override void OnStartRunning()
         {
             RequireSingletonForUpdate<PieceSpawnData>();
-            _spawnData = GetSingleton<PieceSpawnData>();
             _gameControllerEntity = GetSingletonEntity<PieceSpawnData>();
+            _spawnData = EntityManager.GetComponentData<PieceSpawnData>(_gameControllerEntity);
             _materialData = EntityManager.GetComponentData<PieceMaterialData>(_gameControllerEntity);
+            
             _spawnData.IsRedTurn = true;
         }
 
         protected override void OnUpdate()
         {
-            var spawnCol = -1;
+            var spawnColumn = -1;
 
             #region Region_GetPlayerInput
 
             if (Input.GetKeyDown(KeyCode.Alpha1))
             {
-                spawnCol = 0;
+                spawnColumn = 0;
             }
             else if (Input.GetKeyDown(KeyCode.Alpha2))
             {
-                spawnCol = 1;
+                spawnColumn = 1;
             }
             else if (Input.GetKeyDown(KeyCode.Alpha3))
             {
-                spawnCol = 2;
+                spawnColumn = 2;
             }
             else if (Input.GetKeyDown(KeyCode.Alpha4))
             {
-                spawnCol = 3;
+                spawnColumn = 3;
             }
             else if (Input.GetKeyDown(KeyCode.Alpha5))
             {
-                spawnCol = 4;
+                spawnColumn = 4;
             }
             else if (Input.GetKeyDown(KeyCode.Alpha6))
             {
-                spawnCol = 5;
+                spawnColumn = 5;
             }
             else if (Input.GetKeyDown(KeyCode.Alpha7))
             {
-                spawnCol = 6;
+                spawnColumn = 6;
             }
 
             #endregion
 
-            if (spawnCol == -1) return;
+            if (spawnColumn == -1) return;
 
-            var newHorizontalPosition = new HorizontalPosition {Value = spawnCol};
+            var newHorizontalPosition = new HorizontalPosition {Value = spawnColumn};
 
             var highestPosition = -1;
 
@@ -84,7 +86,7 @@ namespace TMG.ConnectFour
 
             var newVerticalPosition = new VerticalPosition {Value = highestPosition + 1};
 
-            EntityManager.SetComponentData(newPieceEntity, newVerticalPosition);
+            EntityManager.AddComponentData(newPieceEntity, newVerticalPosition);
 
             var newPosition = new Translation
             {
@@ -113,12 +115,12 @@ namespace TMG.ConnectFour
 
             if (gameOver)
             {
-                Debug.Log("you won");
+                var winningColor = _spawnData.IsRedTurn ? "Red" : "Blue";
+                Debug.Log($"{winningColor} won!");
                 EntityManager.RemoveComponent<PieceSpawnData>(_gameControllerEntity);
             }
             else
             {
-                Debug.Log("Still goin");
                 _spawnData.IsRedTurn = !_spawnData.IsRedTurn;
             }
         }
@@ -132,7 +134,7 @@ namespace TMG.ConnectFour
 
         private bool CheckForWin(HorizontalPosition columnFilter, ConnectFourColor curTurn)
         {
-            var pieceActive = new ConnectFourColor[6];
+            var pieceActive = new NativeArray<ConnectFourColor>(6, Allocator.Temp);
             Entities
                 .WithSharedComponentFilter(columnFilter)
                 .ForEach((Entity newPieceEntity, in VerticalPosition y, in RenderMesh renderMesh) =>
@@ -160,6 +162,7 @@ namespace TMG.ConnectFour
                     pieceActive[i + 3] == curTurn)
                 {
                     lowestWinningPiece = i;
+                    break;
                 }
             }
             if(lowestWinningPiece == -1 ) return false;
