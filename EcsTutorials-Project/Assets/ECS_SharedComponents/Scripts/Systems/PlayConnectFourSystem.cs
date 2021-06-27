@@ -17,7 +17,7 @@ namespace TMG.ConnectFour
 
         protected override void OnStartRunning()
         {
-            RequireSingletonForUpdate<PieceSpawnData>();
+            //RequireSingletonForUpdate<PieceSpawnData>();
             _gameControllerEntity = GetSingletonEntity<PieceSpawnData>();
             _spawnData = EntityManager.GetComponentData<PieceSpawnData>(_gameControllerEntity);
             _materialData = EntityManager.GetComponentData<PieceMaterialData>(_gameControllerEntity);
@@ -117,7 +117,7 @@ namespace TMG.ConnectFour
             {
                 var winningColor = _spawnData.IsRedTurn ? "Red" : "Blue";
                 Debug.Log($"{winningColor} won!");
-                EntityManager.RemoveComponent<PieceSpawnData>(_gameControllerEntity);
+                //EntityManager.RemoveComponent<PieceSpawnData>(_gameControllerEntity);
             }
             else
             {

@@ -166,6 +166,7 @@ GameObject:
   - component: {fileID: 606725909}
   - component: {fileID: 606725911}
   - component: {fileID: 606725912}
+  - component: {fileID: 606725913}
   m_Layer: 0
   m_Name: PieceSpawner
   m_TagString: Untagged
@@ -229,6 +230,19 @@ MonoBehaviour:
   RedMaterial: {fileID: 2100000, guid: 5acaf6683108e1344ac3842aee37b25f, type: 2}
   BlueMaterial: {fileID: 2100000, guid: bf188b6d6fcc4fd4a94479c946962965, type: 2}
   YellowMaterial: {fileID: 2100000, guid: 6d8b53aae51006a49a580a6978c717eb, type: 2}
+--- !u!114 &606725913
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 606725908}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8efecb6be0094b6fbda6ad70c3212a82, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Value: 114
 --- !u!1 &930463854
 GameObject:
   m_ObjectHideFlags: 0
