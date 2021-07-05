@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace TMG.ChangeFilter
 {
-    public class ChangeFilterSystem : SystemBase
+    public class UpdateEnemyHealthUISystem : SystemBase
     {
         protected override void OnUpdate()
         {
