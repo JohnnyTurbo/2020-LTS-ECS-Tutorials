@@ -6,9 +6,7 @@ namespace TMG.BlobAssets
     public class SetupBlobAssetSystem : SystemBase
     {
         private BattleControlData _controlData;
-        //private LevelUpBlob _levelUpBlob;
-        //private BlobAssetReference<LevelUpBlobAsset> _levelUpBlobAssetReference;
-        
+
         protected override void OnStartRunning()
         {
             var gameControllerEntity = GetSingletonEntity<BattleControlData>();
@@ -37,8 +35,9 @@ namespace TMG.BlobAssets
                 KnightPrefab = _controlData.RedKnightPrefab
             };
 
-            //_levelUpBlobAssetReference = blobBuilder.CreateBlobAssetReference<LevelUpBlobAsset>(Allocator.Persistent);
-            
+            var levelUpBlob = GetSingleton<LevelUpBlob>();
+            levelUpBlob.Reference = blobBuilder.CreateBlobAssetReference<LevelUpBlobAsset>(Allocator.Persistent);
+            SetSingleton(levelUpBlob);
         }
 
         protected override void OnUpdate()

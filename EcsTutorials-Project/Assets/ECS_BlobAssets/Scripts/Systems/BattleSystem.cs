@@ -1,13 +1,12 @@
-﻿using Unity.Collections;
-using Unity.Entities;
+﻿using Unity.Entities;
 using UnityEngine;
 
 namespace TMG.BlobAssets
 {
+    [UpdateAfter(typeof(SetupBlobAssetSystem))]
     public class BattleSystem : SystemBase
     {
         private BattleControlData _controlData;
-        //private LevelUpBlob _levelUpBlob;
         private BlobAssetReference<LevelUpBlobAsset> _levelUpBlobAssetReference;
         private Entity _knightEntity;
         private PlayerExperienceData _playerExperienceData;
@@ -15,51 +14,25 @@ namespace TMG.BlobAssets
         
         protected override void OnStartRunning()
         {
-            #region SetupRegion
+            #region GeneralSetupRegion
 
-            var gameControllerEntity = GetSingletonEntity<BattleControlData>();
-            _controlData = EntityManager.GetComponentData<BattleControlData>(gameControllerEntity);
-            _playerExperienceData = EntityManager.GetComponentData<PlayerExperienceData>(gameControllerEntity);
-            _playerExperienceUI = EntityManager.GetComponentData<PlayerExperienceUI>(gameControllerEntity);
+            _controlData = GetSingleton<BattleControlData>();
             _knightEntity = _controlData.GrayKnight;
-
-            #endregion
             
-            //_levelUpBlob = EntityManager.GetComponentData<LevelUpBlob>(gameControllerEntity);
+            var playerEntity = GetSingletonEntity<PlayerExperienceData>();
+            _playerExperienceData = EntityManager.GetComponentData<PlayerExperienceData>(playerEntity);
+            _playerExperienceUI = EntityManager.GetComponentData<PlayerExperienceUI>(playerEntity);
             
-            using var blobBuilder = new BlobBuilder(Allocator.Temp);
-            ref var experienceBlobAsset = ref blobBuilder.ConstructRoot<LevelUpBlobAsset>();
-            var experienceArray = blobBuilder.Allocate(ref experienceBlobAsset.Array, 3);
-            
-            experienceArray[0] = new LevelUpData
-            {
-                ExperiencePoints = 50, 
-                LevelName = "Gray Knight"
-            };
-            experienceArray[1] = new LevelUpData
-            {
-                ExperiencePoints = 65, 
-                LevelName = "Black Knight", 
-                KnightPrefab = _controlData.BlackKnightPrefab
-                
-            };
-            experienceArray[2] = new LevelUpData
-            {
-                ExperiencePoints = 80, 
-                LevelName = "Red Knight", 
-                KnightPrefab = _controlData.RedKnightPrefab
-            };
-
-            _levelUpBlobAssetReference = blobBuilder.CreateBlobAssetReference<LevelUpBlobAsset>(Allocator.Persistent);
-
-            #region InitializePlayerUIRegion
-
             _playerExperienceUI.PlayerExperienceSlider.value = 0;
-            _playerExperienceUI.PlayerExperienceSlider.maxValue = experienceArray[0].ExperiencePoints;
             _playerExperienceUI.LevelText.text = $"Level 1\n<size=95>Gray Knight</size>";
-
-            #endregion
             
+            #endregion
+
+            _levelUpBlobAssetReference = GetSingleton<LevelUpBlob>().Reference;
+            
+            _playerExperienceUI.PlayerExperienceSlider.maxValue =
+                _levelUpBlobAssetReference.Value.Array[0].ExperiencePoints;
+
             #region EnemySetupRegion
 
             var enemy1Health = EntityManager.GetComponentData<EnemyData>(_controlData.Enemy1);
@@ -95,7 +68,7 @@ namespace TMG.BlobAssets
 
         protected override void OnUpdate()
         {
-            var targetEntity = Entity.Null;
+            Entity targetEntity;
 
             #region InputRegion
 
@@ -139,6 +112,7 @@ namespace TMG.BlobAssets
 
                 if (curExp >= levelUpExp && curLevel < 2)
                 {
+                    // Increment level and carryover Experience
                     curLevel++;
                     curExp %= levelUpExp;
                     _playerExperienceData.CurrentLevel = curLevel;
