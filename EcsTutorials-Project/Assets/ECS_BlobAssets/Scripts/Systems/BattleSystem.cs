@@ -28,7 +28,7 @@ namespace TMG.BlobAssets
             
             #endregion
 
-            _levelUpBlobAssetReference = GetSingleton<GameData>().LevelUpReference;
+            _levelUpBlobAssetReference = GetSingleton<PlayerData>().LevelUpReference;
 
             _playerExperienceUI.PlayerExperienceSlider.maxValue =
                 _levelUpBlobAssetReference.Value.Array[0].ExperiencePoints;

@@ -3,7 +3,7 @@
 namespace TMG.BlobAssets
 {
     [GenerateAuthoringComponent]
-    public struct GameData : IComponentData
+    public struct PlayerData : IComponentData
     {
         public BlobAssetReference<LevelUpBlobAsset> LevelUpReference;
     }

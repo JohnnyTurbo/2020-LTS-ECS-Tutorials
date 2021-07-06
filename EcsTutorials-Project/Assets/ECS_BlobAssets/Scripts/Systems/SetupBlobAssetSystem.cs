@@ -13,31 +13,31 @@ namespace TMG.BlobAssets
             _controlData = EntityManager.GetComponentData<BattleControlData>(gameControllerEntity);
 
             using var blobBuilder = new BlobBuilder(Allocator.Temp);
-            ref var experienceBlobAsset = ref blobBuilder.ConstructRoot<LevelUpBlobAsset>();
-            var experienceArray = blobBuilder.Allocate(ref experienceBlobAsset.Array, 3);
-            
-            experienceArray[0] = new LevelUpData
+            ref var levelUpBlobAsset = ref blobBuilder.ConstructRoot<LevelUpBlobAsset>();
+            var levelUpArray = blobBuilder.Allocate(ref levelUpBlobAsset.Array, 3);
+
+            levelUpArray[0] = new LevelUpData
             {
-                ExperiencePoints = 50, 
+                ExperiencePoints = 50,
                 LevelName = "Gray Knight"
             };
-            experienceArray[1] = new LevelUpData
+            levelUpArray[1] = new LevelUpData
             {
-                ExperiencePoints = 65, 
-                LevelName = "Black Knight", 
+                ExperiencePoints = 65,
+                LevelName = "Black Knight",
                 KnightPrefab = _controlData.BlackKnightPrefab
-                
             };
-            experienceArray[2] = new LevelUpData
+            levelUpArray[2] = new LevelUpData
             {
-                ExperiencePoints = 80, 
-                LevelName = "Red Knight", 
+                ExperiencePoints = 80,
+                LevelName = "Red Knight",
                 KnightPrefab = _controlData.RedKnightPrefab
             };
 
-            var levelUpBlob = GetSingleton<GameData>();
-            levelUpBlob.LevelUpReference = blobBuilder.CreateBlobAssetReference<LevelUpBlobAsset>(Allocator.Persistent);
-            SetSingleton(levelUpBlob);
+            var playerData = GetSingleton<PlayerData>();
+            playerData.LevelUpReference = blobBuilder.CreateBlobAssetReference<LevelUpBlobAsset>(Allocator.Persistent);
+            SetSingleton(playerData);
+
         }
 
         protected override void OnUpdate()
@@ -46,3 +46,9 @@ namespace TMG.BlobAssets
         }
     }
 }
+
+
+
+
+
+
