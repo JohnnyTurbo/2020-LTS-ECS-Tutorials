@@ -46,7 +46,7 @@ namespace TMG.ChangeFilter
 
         protected override void OnUpdate()
         {
-            var targetEntity = Entity.Null;
+            Entity targetEntity;
 
             #region InputRegion
 

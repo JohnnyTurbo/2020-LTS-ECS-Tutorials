@@ -10,7 +10,7 @@ namespace TMG.ChangeFilter
         {
             Entities
                 .WithChangeFilter<EnemyHealthData, Translation>()
-                .ForEach((Entity e, EnemyHealthUI ui, ref EnemyHealthData healthData) =>
+                .ForEach((Entity e, EnemyHealthUI ui, in EnemyHealthData healthData) =>
             {
                 Debug.Log($"Updating Health UI on: {e.Index}");
                 ui.Slider.value = healthData.Value;
