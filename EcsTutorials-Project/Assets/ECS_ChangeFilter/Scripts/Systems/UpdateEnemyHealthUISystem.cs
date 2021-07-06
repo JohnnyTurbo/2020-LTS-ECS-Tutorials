@@ -11,10 +11,27 @@ namespace TMG.ChangeFilter
             Entities
                 .WithChangeFilter<EnemyHealthData, Translation>()
                 .ForEach((Entity e, EnemyHealthUI ui, in EnemyHealthData healthData) =>
-            {
-                Debug.Log($"Updating Health UI on: {e.Index}");
-                ui.Slider.value = healthData.Value;
-            }).WithoutBurst().Run();
+                {
+                    ui.Slider.value = healthData.Value;
+                    Debug.Log($"Updating Health UI on: {e.Index}");
+                }).WithoutBurst().Run();
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
