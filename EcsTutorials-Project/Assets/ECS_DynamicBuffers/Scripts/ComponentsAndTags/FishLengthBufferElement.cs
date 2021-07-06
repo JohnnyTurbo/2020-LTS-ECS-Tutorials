@@ -2,6 +2,7 @@
 
 namespace TMG.DynamicBuffers
 {
+    [InternalBufferCapacity(8)]
     [GenerateAuthoringComponent]
     public struct FishLengthBufferElement : IBufferElementData
     {
