@@ -5,6 +5,7 @@ namespace TMG.DynamicBuffers
 {
     public class FishingSimSystem : SystemBase
     {
+        private Entity _fisherman;
         private DynamicBuffer<FishLengthBufferElement> _fishLog;
         
         private FishingSimData _fishingSimData;
@@ -19,9 +20,9 @@ namespace TMG.DynamicBuffers
             _fishingSimUI = EntityManager.GetComponentData<FishingSimUI>(controllerEntity);
             
             #endregion
-            
-            var fisherman = EntityManager.CreateEntity();
-            _fishLog = EntityManager.AddBuffer<FishLengthBufferElement>(fisherman);
+
+            _fisherman = EntityManager.CreateEntity();
+            _fishLog = EntityManager.AddBuffer<FishLengthBufferElement>(_fisherman);
         }
 
         protected override void OnUpdate()
@@ -46,8 +47,10 @@ namespace TMG.DynamicBuffers
             {
                 // Get random fish length
                 var fishLength = _fishingSimData.NextFishLength;
-                //_fishLog.Add(new FishLengthBufferElement {Value = 6});
+
+                _fishLog = GetBuffer<FishLengthBufferElement>(_fisherman);
                 _fishLog.Add(fishLength);
+                
                 _fishingSimUI.FishCaughtText.text = $"You Caught a\n<size=400>{fishLength}\"</size>\nTrout!";
             }
             
@@ -59,6 +62,7 @@ namespace TMG.DynamicBuffers
                 
                 var outputStr = "You caught fish with lengths of:\n";
                 var totalLength = 0;
+
                 for (var i = 0; i < _fishLog.Length; i++)
                 {
                     outputStr += $"{_fishLog[i].Value}\" - ";
@@ -78,3 +82,11 @@ namespace TMG.DynamicBuffers
         }
     }
 }
+
+
+
+
+
+
+
+
