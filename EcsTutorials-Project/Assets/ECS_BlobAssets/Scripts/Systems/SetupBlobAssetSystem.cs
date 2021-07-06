@@ -35,8 +35,8 @@ namespace TMG.BlobAssets
                 KnightPrefab = _controlData.RedKnightPrefab
             };
 
-            var levelUpBlob = GetSingleton<LevelUpBlob>();
-            levelUpBlob.Reference = blobBuilder.CreateBlobAssetReference<LevelUpBlobAsset>(Allocator.Persistent);
+            var levelUpBlob = GetSingleton<GameData>();
+            levelUpBlob.LevelUpReference = blobBuilder.CreateBlobAssetReference<LevelUpBlobAsset>(Allocator.Persistent);
             SetSingleton(levelUpBlob);
         }
 
