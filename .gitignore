@@ -23,8 +23,8 @@ CodeCoverage.meta
 [Mm]aterials.meta
 Thirdparty/
 Thirdparty.meta
-EcsTutorials-Project/Assets/SpaceSkies\ Free/
-Assets/SpaceSkies\ Free.meta
+SpaceSkies\ Free/
+SpaceSkies\ Free.meta
 
 # Asset meta data should only be ignored when the corresponding asset is also ignored
 !/[Aa]ssets/**/*.meta
