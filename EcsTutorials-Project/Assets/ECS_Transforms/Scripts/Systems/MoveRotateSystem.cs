@@ -21,9 +21,8 @@ namespace TMG.ECS_Transforms
                 };
                 position += moveRotateData.OriginPosition;
                 var rotation = quaternion.Euler(magnitude * (float) math.sin(curTime * frequency) + magnitude + 1, 0, 0);
-
-                var newLocalToParent = new float4x4(rotation, position);
-                localToParent.Value = newLocalToParent;
+                
+                localToParent.Value = new float4x4(rotation, position);
             }).Run();
         }
     }

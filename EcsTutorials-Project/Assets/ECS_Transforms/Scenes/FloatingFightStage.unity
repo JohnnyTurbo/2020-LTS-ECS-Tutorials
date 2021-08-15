@@ -3115,7 +3115,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &500413560
 Transform:
   m_ObjectHideFlags: 0
@@ -3225,7 +3225,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &515039425
 Transform:
   m_ObjectHideFlags: 0
@@ -5340,7 +5340,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1095441848
 Transform:
   m_ObjectHideFlags: 0
@@ -6996,7 +6996,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1485524544
 Transform:
   m_ObjectHideFlags: 0
@@ -7107,7 +7107,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1487177518
 Transform:
   m_ObjectHideFlags: 0
@@ -7514,7 +7514,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 419c3e7f366d47fb84b32e78e93465a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BattleStageFollower: {fileID: 34371062}
+  TrackFollower: {fileID: 34371062}
 --- !u!114 &1598948330
 MonoBehaviour:
   m_ObjectHideFlags: 0
