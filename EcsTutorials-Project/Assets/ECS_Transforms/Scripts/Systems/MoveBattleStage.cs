@@ -1,4 +1,5 @@
 ﻿using Unity.Entities;
+using Unity.Mathematics;
 using Unity.Transforms;
 
 namespace TMG.ECS_Transforms
@@ -7,10 +8,12 @@ namespace TMG.ECS_Transforms
     {
         protected override void OnUpdate()
         {
-            Entities.ForEach((ref Translation translation, ref Rotation rotation, in BattleStageManagedData battleStageManagedData) =>
+            Entities.ForEach((ref LocalToWorld localToWorld, in BattleStageManagedData battleStageManagedData) =>
             {
-                translation.Value = battleStageManagedData.BattleStageFollower.transform.position;
-                rotation.Value = battleStageManagedData.BattleStageFollower.transform.rotation;
+                var position = battleStageManagedData.BattleStageFollower.transform.position;
+                var rotation = battleStageManagedData.BattleStageFollower.transform.rotation;
+
+                localToWorld.Value = new float4x4(rotation, position);
             }).WithoutBurst().Run();
         }
     }
