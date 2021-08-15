@@ -10,8 +10,8 @@ namespace TMG.ECS_Transforms
         {
             Entities.ForEach((ref LocalToWorld localToWorld, in BattleStageManagedData battleStageManagedData) =>
             {
-                var position = battleStageManagedData.BattleStageFollower.transform.position;
-                var rotation = battleStageManagedData.BattleStageFollower.transform.rotation;
+                var position = battleStageManagedData.BattleStageFollower.position;
+                var rotation = battleStageManagedData.BattleStageFollower.rotation;
 
                 localToWorld.Value = new float4x4(rotation, position);
             }).WithoutBurst().Run();

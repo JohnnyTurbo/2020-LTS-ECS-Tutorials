@@ -7514,7 +7514,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 419c3e7f366d47fb84b32e78e93465a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BattleStageFollower: {fileID: 34371060}
+  BattleStageFollower: {fileID: 34371062}
 --- !u!114 &1598948330
 MonoBehaviour:
   m_ObjectHideFlags: 0

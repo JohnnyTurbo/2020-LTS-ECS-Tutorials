@@ -6,6 +6,6 @@ namespace TMG.ECS_Transforms
     [GenerateAuthoringComponent]
     public class BattleStageManagedData : IComponentData
     {
-        public GameObject BattleStageFollower;
+        public Transform BattleStageFollower;
     }
 }
