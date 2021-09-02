@@ -9,13 +9,14 @@ namespace TMG.ECS_GetComponentFromEntity
         protected override void OnUpdate()
         {
             var allTranslations = GetComponentDataFromEntity<Translation>(true);
+            
             var deltaTime = Time.DeltaTime;
             Entities.ForEach((Entity e, ref Translation translation, ref Rotation rotation, in FollowerMoveData followerMoveData, in MovementData movementData) =>
             {
                 if(!allTranslations.HasComponent(followerMoveData.CurrentLeaderEntity)){return;}
-                
-                var targetPosition = allTranslations[followerMoveData.CurrentLeaderEntity].Value;
 
+                var targetPosition = allTranslations[followerMoveData.CurrentLeaderEntity].Value;
+                
                 #region MoveAndRotateRegion
 
                 rotation.Value = quaternion.LookRotation(translation.Value - targetPosition, new float3(0, 1, 0));
