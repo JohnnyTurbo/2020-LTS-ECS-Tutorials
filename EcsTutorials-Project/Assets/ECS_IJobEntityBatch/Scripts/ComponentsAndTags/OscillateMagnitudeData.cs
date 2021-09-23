@@ -3,7 +3,7 @@
 namespace TMG.BatchedJobs
 {
     [GenerateAuthoringComponent]
-    public struct MoveSpeedData : IComponentData
+    public struct OscillateMagnitudeData : IComponentData
     {
         public float Value;
     }
