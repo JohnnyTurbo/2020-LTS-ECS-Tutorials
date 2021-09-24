@@ -20,12 +20,12 @@ namespace TMG.BatchedJobs
         {
             var movementJob = new MovementJob
             {
-                CurrentTime = (float) Time.ElapsedTime,
                 TranslationTypeHandle = GetComponentTypeHandle<Translation>(false),
                 MagnitudeTypeHandle = GetComponentTypeHandle<OscillateMagnitudeData>(true),
-                DoubleSpeedTypeHandle = GetComponentTypeHandle<DoubleSpeedTag>(true)
+                DoubleSpeedTypeHandle = GetComponentTypeHandle<DoubleSpeedTag>(true),
+                CurrentTime = (float) Time.ElapsedTime
             };
-
+            
             Dependency = movementJob.ScheduleParallel(_entityQuery, 1, Dependency);
         }
     }
@@ -33,27 +33,48 @@ namespace TMG.BatchedJobs
     public struct MovementJob : IJobEntityBatch
     {
         public ComponentTypeHandle<Translation> TranslationTypeHandle;
-        
+
         [ReadOnly] public ComponentTypeHandle<OscillateMagnitudeData> MagnitudeTypeHandle;
         [ReadOnly] public ComponentTypeHandle<DoubleSpeedTag> DoubleSpeedTypeHandle;
-        
+
         public float CurrentTime;
         
         [BurstCompile]
         public void Execute(ArchetypeChunk batchInChunk, int batchIndex)
         {
             var frequency = batchInChunk.Has(DoubleSpeedTypeHandle) ? 2f : 1f;
-            
-            var moveSpeedArray = batchInChunk.GetNativeArray(MagnitudeTypeHandle);
+
             var translationArray = batchInChunk.GetNativeArray(TranslationTypeHandle);
-            
+            var magnitudeArray = batchInChunk.GetNativeArray(MagnitudeTypeHandle);
+
             for (var i = 0; i < batchInChunk.Count; i++)
             {
-                var magnitude = moveSpeedArray[i].Value;
-                var curTranslation = translationArray[i];
-                curTranslation.Value.y = magnitude * math.sin(CurrentTime * frequency + magnitude + 1f);
-                translationArray[i] = curTranslation;
+                var magnitude = magnitudeArray[i].Value;
+                var translation = translationArray[i];
+                translation.Value.y = magnitude * math.sin(CurrentTime * frequency + magnitude + 1f);
+                translationArray[i] = translation;
             }
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
