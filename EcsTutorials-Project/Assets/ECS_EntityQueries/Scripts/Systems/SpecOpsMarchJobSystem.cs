@@ -6,7 +6,7 @@ using Unity.Transforms;
 
 namespace TMG.EntityQueries
 {
-    //[DisableAutoCreation]
+    [DisableAutoCreation]
     public class SpecOpsMarchJobSystem : SystemBase
     {
         private EntityQueryDesc _entityQueryDesc;
@@ -19,8 +19,10 @@ namespace TMG.EntityQueries
                 Any = new []{ComponentType.ReadOnly<SpinSpeedData>(), ComponentType.ReadOnly<JumpData>()},
                 None = new[] {ComponentType.ReadOnly<CommanderTag>()}
             };
+            
+            RequireForUpdate(GetEntityQuery(_entityQueryDesc));
         }
-
+        
         protected override void OnUpdate()
         {
             var soldierQuery = GetEntityQuery(_entityQueryDesc);

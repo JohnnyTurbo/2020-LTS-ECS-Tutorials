@@ -5,7 +5,7 @@ using Unity.Transforms;
 
 namespace TMG.EntityQueries
 {
-    
+    [DisableAutoCreation]
     public class SoldierMarchJobSystem : SystemBase
     {
         protected override void OnUpdate()
