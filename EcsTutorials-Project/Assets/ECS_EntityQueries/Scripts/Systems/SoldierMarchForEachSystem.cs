@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace TMG.EntityQueries
 {
-    //[DisableAutoCreation]
+    [DisableAutoCreation]
     public class SoldierMarchForEachSystem : SystemBase
     {
         private EntityQuery _soldierQuery;

@@ -5,13 +5,13 @@ using Unity.Transforms;
 
 namespace TMG.EntityQueries
 {
-    [DisableAutoCreation]
+    //[DisableAutoCreation]
     public class SoldierMarchJobSystem : SystemBase
     {
         protected override void OnUpdate()
         {
             var soldierQuery = GetEntityQuery(typeof(Translation), ComponentType.ReadOnly<SoldierMoveData>());
-
+            
             var soldierMarchJob = new SoldierMarchJob
             {
                 TranslationTypeHandle = GetComponentTypeHandle<Translation>(false),
@@ -20,6 +20,7 @@ namespace TMG.EntityQueries
             };
 
             Dependency = soldierMarchJob.ScheduleParallel(soldierQuery, 1, Dependency);
+            RequireForUpdate(soldierQuery);
         }
     }
     public struct SoldierMarchJob : IJobEntityBatch

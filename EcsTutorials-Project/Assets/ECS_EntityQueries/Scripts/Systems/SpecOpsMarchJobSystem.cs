@@ -6,7 +6,7 @@ using Unity.Transforms;
 
 namespace TMG.EntityQueries
 {
-    [DisableAutoCreation]
+    //[DisableAutoCreation]
     public class SpecOpsMarchJobSystem : SystemBase
     {
         private EntityQueryDesc _entityQueryDesc;
