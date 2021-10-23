@@ -2,7 +2,7 @@
 
 namespace TMG.SystemStateComponents
 {
-    //[DisableAutoCreation]
+    [DisableAutoCreation]
     public class CleanupShadowSystem : SystemBase
     {
         private EndSimulationEntityCommandBufferSystem _endSimulationEntityCommandBufferSystem;
