@@ -15,10 +15,12 @@ namespace TMG.SystemStateComponents
         protected override void OnUpdate()
         {
             var ecb = _endSimulationEntityCommandBufferSystem.CreateCommandBuffer();
-            Entities.WithAll<ShadowTag>().ForEach((in ShadowStateData shadowStateData, in Translation translation) =>
+            Entities
+                .WithAll<ShadowTag>()
+                .ForEach((in ShadowStateData shadowStateData, in Translation translation) =>
             {
                 var shadowEntity = shadowStateData.ShadowEntity;
-                var shadowTranslation = GetComponent<Translation>(shadowEntity);
+                Translation shadowTranslation;
                 shadowTranslation.Value = translation.Value;
                 shadowTranslation.Value.y = 0.0001f;
                 ecb.SetComponent(shadowEntity, shadowTranslation);

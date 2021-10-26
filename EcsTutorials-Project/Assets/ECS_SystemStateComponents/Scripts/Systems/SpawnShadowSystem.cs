@@ -16,6 +16,7 @@ namespace TMG.SystemStateComponents
         protected override void OnUpdate()
         {
             var ecb = _endSimulationEntityCommandBufferSystem.CreateCommandBuffer();
+            var shadowPrefab = _prefabDataSingleton.ShadowPrefab;
             Entities
                 .WithAll<ShadowTag>()
                 .WithNone<ShadowStateData>()
@@ -23,11 +24,11 @@ namespace TMG.SystemStateComponents
                 {
                     var newShadowStateData = new ShadowStateData
                     {
-                        ShadowEntity = ecb.Instantiate(_prefabDataSingleton.ShadowPrefab)
+                        ShadowEntity = ecb.Instantiate(shadowPrefab)
                     };
                     ecb.AddComponent<ShadowStateData>(e);
                     ecb.SetComponent(e, newShadowStateData);
-                }).WithoutBurst().Run();
+                }).Run();
         }
     }
 }

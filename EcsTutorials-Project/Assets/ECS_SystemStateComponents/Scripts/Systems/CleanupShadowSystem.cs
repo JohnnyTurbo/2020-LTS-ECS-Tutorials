@@ -2,7 +2,6 @@
 
 namespace TMG.SystemStateComponents
 {
-    [DisableAutoCreation]
     public class CleanupShadowSystem : SystemBase
     {
         private EndSimulationEntityCommandBufferSystem _endSimulationEntityCommandBufferSystem;
@@ -15,7 +14,9 @@ namespace TMG.SystemStateComponents
         protected override void OnUpdate()
         {
             var ecb = _endSimulationEntityCommandBufferSystem.CreateCommandBuffer();
-            Entities.WithNone<ShadowTag>().ForEach((Entity e, in ShadowStateData shadowStateData) =>
+            Entities
+                .WithNone<ShadowTag>()
+                .ForEach((Entity e, in ShadowStateData shadowStateData) =>
             {
                 ecb.DestroyEntity(shadowStateData.ShadowEntity);
                 ecb.RemoveComponent<ShadowStateData>(e);
