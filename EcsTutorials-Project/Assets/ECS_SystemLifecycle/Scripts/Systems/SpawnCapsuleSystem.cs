@@ -11,6 +11,8 @@ namespace TMG.SystemLifecycle
         protected override void OnStartRunning()
         {
             _spawnCapsuleData = GetSingleton<SpawnCapsuleData>();
+            var eq = new EntityQuery();
+            eq.CalculateEntityCount();
         }
 
         protected override void OnUpdate()
@@ -18,6 +20,8 @@ namespace TMG.SystemLifecycle
             if (Input.GetKeyDown(KeyCode.Alpha1))
             {
                 _spawnedCapsule = EntityManager.Instantiate(_spawnCapsuleData.CapsulePrefab);
+                var newEntity = EntityManager.CreateEntity(typeof(TestDC));
+                EntityManager.Instantiate(newEntity);
             }
 
             if(Input.GetKeyDown(KeyCode.Alpha2))
