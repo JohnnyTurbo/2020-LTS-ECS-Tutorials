@@ -3,8 +3,8 @@
 namespace TMG.UnitSelection
 {
     [GenerateAuthoringComponent]
-    public struct SelectionUIData : IComponentData
+    public struct SelectionUIPrefab : IComponentData
     {
-        public Entity SelectionUIPrefab;
+        public Entity Value;
     }
 }

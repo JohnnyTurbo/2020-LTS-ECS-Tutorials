@@ -14,12 +14,12 @@ namespace TMG.UnitSelection
         private Camera _mainCamera;
         private BuildPhysicsWorld _physicsWorldSystem;
         private CollisionWorld _collisionWorld;
-        private SelectionUIData _selectionUIData;
+        private SelectionUIPrefab _selectionUIPrefab;
 
         protected override void OnStartRunning()
         {
             _mainCamera = Camera.main;
-            _selectionUIData = GetSingleton<SelectionUIData>();
+            _selectionUIPrefab = GetSingleton<SelectionUIPrefab>();
         }
         
         protected override void OnUpdate()
@@ -64,7 +64,7 @@ namespace TMG.UnitSelection
         private void SelectUnit(Entity selectedEntity)
         {
             EntityManager.AddComponent<SelectedEntityTag>(selectedEntity);
-            var selectionUI = EntityManager.Instantiate(_selectionUIData.SelectionUIPrefab);
+            var selectionUI = EntityManager.Instantiate(_selectionUIPrefab.Value);
             EntityManager.AddComponentData(selectionUI, new Parent {Value = selectedEntity});
             EntityManager.AddComponentData(selectionUI, new LocalToParent {Value = float4x4.zero});
         }

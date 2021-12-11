@@ -5,19 +5,21 @@ namespace TMG.UnitSelection
 {
     public class MultiSelectionManaged : MonoBehaviour
     {
-        private MultiUnitSelectionSystem _multiUnitSelectionSystem;
+        [SerializeField] private float _castDistance;
+        
+        private UnitSelectionSystem _unitSelectionSystem;
 
         private void Start()
         {
-            _multiUnitSelectionSystem =
-                World.DefaultGameObjectInjectionWorld.GetOrCreateSystem<MultiUnitSelectionSystem>();
+            _unitSelectionSystem = World.DefaultGameObjectInjectionWorld.GetOrCreateSystem<UnitSelectionSystem>();
+            _unitSelectionSystem.CastDistance = _castDistance;
         }
 
         private void OnGUI()
         {
-            if (_multiUnitSelectionSystem.IsDragging)
+            if (_unitSelectionSystem.IsDragging)
             {
-                var rect = SelectionGUI.GetScreenRect(_multiUnitSelectionSystem.MouseStartPos, Input.mousePosition);
+                var rect = SelectionGUI.GetScreenRect(_unitSelectionSystem.MouseStartPos, Input.mousePosition);
                 SelectionGUI.DrawScreenRect(rect, new Color(0.8f, 0.8f, 0.95f, 0.1f));
                 SelectionGUI.DrawScreenRectBorder(rect, 1, Color.blue);
             }

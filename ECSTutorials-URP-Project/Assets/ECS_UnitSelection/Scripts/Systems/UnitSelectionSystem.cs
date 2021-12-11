@@ -1,35 +1,40 @@
-﻿using System;
-using Unity.Collections;
+﻿using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Physics;
 using Unity.Physics.Systems;
 using Unity.Transforms;
 using UnityEngine;
-using Material = UnityEngine.Material;
 using RaycastHit = Unity.Physics.RaycastHit;
 
 namespace TMG.UnitSelection
 {
-    public class MultiUnitSelectionSystem : SystemBase
+    [AlwaysUpdateSystem]
+    public class UnitSelectionSystem : SystemBase
     {
+        public float CastDistance;
+        
         private Camera _mainCamera;
         private BuildPhysicsWorld _physicsWorldSystem;
         private CollisionWorld _collisionWorld;
-        private SelectionUIData _selectionUIData;
 
         private float3 _mouseStartPos;
         private float3 _mouseEndPos;
         private bool _isDragging;
-
+        private EntityArchetype _selectionArchetype;
+        
         public bool IsDragging => _isDragging;
-
         public float3 MouseStartPos => _mouseStartPos;
+
+        protected override void OnCreate()
+        {
+            _selectionArchetype = EntityManager.CreateArchetype(typeof(PhysicsCollider), typeof(LocalToWorld),
+                typeof(SelectionColliderTag));
+        }
 
         protected override void OnStartRunning()
         {
             _mainCamera = Camera.main;
-            _selectionUIData = GetSingleton<SelectionUIData>();
         }
         
         protected override void OnUpdate()
@@ -62,45 +67,6 @@ namespace TMG.UnitSelection
                     SelectSingleUnit();
                 }
             }
-        }
-
-        private void SelectMultipleUnits()
-        {
-            var castDistance = 100f;
-
-            var topLeft = math.min(_mouseStartPos, _mouseEndPos);
-            var botRight = math.max(_mouseStartPos, _mouseEndPos);
-
-            var rect = Rect.MinMaxRect(topLeft.x, topLeft.y, botRight.x, botRight.y);
-
-            var cornerRays = new UnityEngine.Ray[]
-            {
-                _mainCamera.ScreenPointToRay(rect.min),
-                _mainCamera.ScreenPointToRay(rect.max),
-                _mainCamera.ScreenPointToRay(new Vector2(rect.xMin, rect.yMax)),
-                _mainCamera.ScreenPointToRay(new Vector2(rect.xMax, rect.yMin))
-            };
-
-            var verticies = new NativeArray<float3>(8, Allocator.Temp);
-
-            for (int i = 0, j = 0; i < 8; i+=2, j++)
-            {
-                verticies[i] = cornerRays[j].origin;
-                verticies[i + 1] = cornerRays[j].GetPoint(castDistance);
-            }
-
-            var physicsMaterial = Unity.Physics.Material.Default;
-            physicsMaterial.CollisionResponse = CollisionResponsePolicy.RaiseTriggerEvents;
-            var collisionFilter = new CollisionFilter
-            {
-                BelongsTo = (uint) CollisionLayers.Selection,
-                CollidesWith = (uint) CollisionLayers.Units
-            };
-            var selectionCollider = ConvexCollider.Create(verticies, ConvexHullGenerationParameters.Default,
-                collisionFilter, physicsMaterial);
-            var newSelectionEntity =
-                EntityManager.CreateEntity(typeof(PhysicsCollider), typeof(Translation), typeof(LocalToWorld));
-            EntityManager.SetComponentData(newSelectionEntity, new PhysicsCollider{Value = selectionCollider});
         }
 
         private void SelectSingleUnit()
@@ -137,18 +103,53 @@ namespace TMG.UnitSelection
             return _collisionWorld.CastRay(input, out raycastHit);
         }
 
+        private void SelectMultipleUnits()
+        {
+            _isDragging = false;
+
+            var topLeft = math.min(_mouseStartPos, _mouseEndPos);
+            var botRight = math.max(_mouseStartPos, _mouseEndPos);
+
+            var rect = Rect.MinMaxRect(topLeft.x, topLeft.y, botRight.x, botRight.y);
+
+            var cornerRays = new UnityEngine.Ray[]
+            {
+                _mainCamera.ScreenPointToRay(rect.min),
+                _mainCamera.ScreenPointToRay(rect.max),
+                _mainCamera.ScreenPointToRay(new Vector2(rect.xMin, rect.yMax)),
+                _mainCamera.ScreenPointToRay(new Vector2(rect.xMax, rect.yMin))
+            };
+
+            var vertices = new NativeArray<float3>(8, Allocator.Temp);
+
+            for (int i = 0, j = 0; i < 8; i+=2, j++)
+            {
+                vertices[i] = cornerRays[j].origin;
+                vertices[i + 1] = cornerRays[j].GetPoint(CastDistance);
+            }
+
+            var physicsMaterial = Unity.Physics.Material.Default;
+            physicsMaterial.CollisionResponse = CollisionResponsePolicy.RaiseTriggerEvents;
+            var collisionFilter = new CollisionFilter
+            {
+                BelongsTo = (uint) CollisionLayers.Selection,
+                CollidesWith = (uint) CollisionLayers.Units
+            };
+            var selectionCollider = ConvexCollider.Create(vertices, ConvexHullGenerationParameters.Default,
+                collisionFilter, physicsMaterial);
+
+            var newSelectionEntity = EntityManager.CreateEntity(_selectionArchetype);
+            EntityManager.SetComponentData(newSelectionEntity, new PhysicsCollider{Value = selectionCollider});
+        }
+
         private void SelectUnit(Entity selectedEntity)
         {
             EntityManager.AddComponent<SelectedEntityTag>(selectedEntity);
-            var selectionUI = EntityManager.Instantiate(_selectionUIData.SelectionUIPrefab);
-            EntityManager.AddComponentData(selectionUI, new Parent {Value = selectedEntity});
-            EntityManager.AddComponentData(selectionUI, new LocalToParent {Value = float4x4.zero});
         }
 
         private void DeselectUnits()
         {
             EntityManager.RemoveComponent<SelectedEntityTag>(GetEntityQuery(typeof(SelectedEntityTag)));
-            EntityManager.DestroyEntity(GetEntityQuery(typeof(SelectionUITag)));
         }
     }
 }

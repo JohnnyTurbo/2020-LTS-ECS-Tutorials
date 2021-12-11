@@ -2,5 +2,5 @@
 
 namespace TMG.UnitSelection
 {
-    public struct SelectedEntityTag : IComponentData{}
+    public struct DeleteEntityTag : IComponentData{}
 }
