@@ -3,7 +3,5 @@
 namespace TMG.UnitSelection
 {
     [GenerateAuthoringComponent]
-    public struct SelectionUITag : IComponentData
-    {
-    }
+    public struct SelectionUITag : IComponentData{}
 }
