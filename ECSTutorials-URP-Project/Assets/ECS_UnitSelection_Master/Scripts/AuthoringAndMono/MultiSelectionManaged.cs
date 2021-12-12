@@ -1,7 +1,7 @@
 ﻿using Unity.Entities;
 using UnityEngine;
 
-namespace TMG.UnitSelection
+namespace TMG.UnitSelection_Master
 {
     public class MultiSelectionManaged : MonoBehaviour
     {

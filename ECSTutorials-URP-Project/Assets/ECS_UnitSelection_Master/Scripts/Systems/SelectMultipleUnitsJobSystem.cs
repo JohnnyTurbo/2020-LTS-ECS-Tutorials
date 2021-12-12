@@ -3,7 +3,7 @@ using Unity.Entities;
 using Unity.Physics;
 using Unity.Physics.Systems;
 
-namespace TMG.UnitSelection
+namespace TMG.UnitSelection_Master
 {
     [UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
     public class SelectMultipleUnitsJobSystem : SystemBase

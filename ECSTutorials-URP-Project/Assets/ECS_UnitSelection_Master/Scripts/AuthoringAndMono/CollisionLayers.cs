@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TMG.UnitSelection
+namespace TMG.UnitSelection_Master
 {
     [Flags]
     public enum CollisionLayers
