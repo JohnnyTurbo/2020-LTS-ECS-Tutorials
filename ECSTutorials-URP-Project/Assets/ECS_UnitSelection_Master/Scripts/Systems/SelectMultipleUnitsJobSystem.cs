@@ -85,10 +85,10 @@ namespace TMG.UnitSelection_Master
                 return;
             }
 
-            var isBodyATrash = Units.HasComponent(entityA);
-            var isBodyBTrash = Units.HasComponent(entityB);
+            var isBodyAUnit = Units.HasComponent(entityA);
+            var isBodyBUnit = Units.HasComponent(entityB);
 
-            if ((isBodyASelection && !isBodyBTrash) || (isBodyBSelection && !isBodyATrash))
+            if ((isBodyASelection && !isBodyBUnit) || (isBodyBSelection && !isBodyAUnit))
             {
                 return;
             }
