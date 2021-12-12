@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 5276074528153770905}
   - component: {fileID: 5276074528153770910}
   - component: {fileID: 567529616684198786}
-  - component: {fileID: 1073410375466638670}
   m_Layer: 0
   m_Name: SelectionRing
   m_TagString: Untagged
@@ -96,15 +95,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 0
---- !u!114 &1073410375466638670
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5276074528153770908}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 104a968f88b14e3ca580b19b10d0c26f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

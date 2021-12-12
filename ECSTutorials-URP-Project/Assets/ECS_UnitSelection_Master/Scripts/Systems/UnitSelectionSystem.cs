@@ -9,8 +9,8 @@ using RaycastHit = Unity.Physics.RaycastHit;
 
 namespace TMG.UnitSelection_Master
 {
-    //[AlwaysUpdateSystem]
-    [DisableAutoCreation]
+    [AlwaysUpdateSystem]
+    //[DisableAutoCreation]
     public class UnitSelectionSystem : SystemBase
     {
         public float CastDistance;
