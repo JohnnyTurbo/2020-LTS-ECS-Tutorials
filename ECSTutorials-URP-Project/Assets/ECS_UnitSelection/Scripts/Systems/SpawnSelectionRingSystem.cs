@@ -2,7 +2,7 @@
 using Unity.Mathematics;
 using Unity.Transforms;
 
-namespace TMG.UnitSelection
+namespace TMG.UnitSelection_Master
 {
     public struct SelectionRingStateData : ISystemStateComponentData
     {

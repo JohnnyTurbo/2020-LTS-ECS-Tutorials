@@ -7,7 +7,7 @@ using Unity.Transforms;
 using UnityEngine;
 using RaycastHit = Unity.Physics.RaycastHit;
 
-namespace TMG.UnitSelection
+namespace TMG.UnitSelection_Master
 {
     [AlwaysUpdateSystem]
     public class UnitSelectionSystem : SystemBase
