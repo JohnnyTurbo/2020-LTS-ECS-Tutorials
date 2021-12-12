@@ -52,7 +52,11 @@ namespace TMG.UnitSelection
             
             if (Input.GetMouseButtonUp(0))
             {
-                DeselectUnits();
+                if (!Input.GetKey(KeyCode.LeftShift))
+                {
+                    DeselectUnits();
+                }
+
                 _mouseEndPos = Input.mousePosition;
                 
                 if (_isDragging)

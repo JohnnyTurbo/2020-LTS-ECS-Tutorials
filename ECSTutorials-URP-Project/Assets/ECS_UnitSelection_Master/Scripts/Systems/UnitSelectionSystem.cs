@@ -9,7 +9,8 @@ using RaycastHit = Unity.Physics.RaycastHit;
 
 namespace TMG.UnitSelection_Master
 {
-    [AlwaysUpdateSystem]
+    //[AlwaysUpdateSystem]
+    [DisableAutoCreation]
     public class UnitSelectionSystem : SystemBase
     {
         public float CastDistance;
@@ -52,7 +53,10 @@ namespace TMG.UnitSelection_Master
             
             if (Input.GetMouseButtonUp(0))
             {
-                DeselectUnits();
+                if (!Input.GetKey(KeyCode.LeftShift))
+                {
+                    DeselectUnits();
+                }
                 _mouseEndPos = Input.mousePosition;
                 
                 if (_isDragging)
