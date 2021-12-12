@@ -16,28 +16,94 @@ namespace TMG.UnitSelection
         private BuildPhysicsWorld _buildPhysicsWorld;
         private CollisionWorld _collisionWorld;
 
+        private EntityArchetype _selectionArchetype;
+        private float3 _mouseStartPos;
+        private bool _isDragging;
+
+        public float3 MouseStartPos => _mouseStartPos;
+        public bool IsDragging => _isDragging;
+
         protected override void OnCreate()
         {
             _mainCamera = Camera.main;
             _buildPhysicsWorld = World.GetOrCreateSystem<BuildPhysicsWorld>();
+
+            _selectionArchetype = EntityManager.CreateArchetype(typeof(PhysicsCollider), typeof(LocalToWorld),
+                typeof(SelectionColliderTag));
         }
 
         protected override void OnUpdate()
         {
+            if (Input.GetMouseButtonDown(0))
+            {
+                _mouseStartPos = Input.mousePosition;
+            }
+
+            if (Input.GetMouseButton(0) && !_isDragging)
+            {
+                if (math.distance(_mouseStartPos, Input.mousePosition) > 25)
+                {
+                    _isDragging = true;
+                }
+            }
+            
             if (Input.GetMouseButtonUp(0))
             {
                 if (!Input.GetKey(KeyCode.LeftShift))
                 {
                     DeselectUnits();
                 }
-                
-                SelectSingleUnit();
+
+                if (_isDragging)
+                {
+                    SelectMultipleUnits();
+                }
+                else
+                {
+                    SelectSingleUnit();   
+                }
             }
         }
 
-        private void DeselectUnits()
+        private void SelectMultipleUnits()
         {
-            EntityManager.RemoveComponent<SelectedEntityTag>(GetEntityQuery(typeof(SelectedEntityTag)));
+            _isDragging = false;
+
+            var topLeft = math.min(_mouseStartPos, Input.mousePosition);
+            var botRight = math.max(_mouseStartPos, Input.mousePosition);
+
+            var rect = Rect.MinMaxRect(topLeft.x, topLeft.y, botRight.x, botRight.y);
+
+            var cornerRays = new[]
+            {
+                _mainCamera.ScreenPointToRay(rect.min),
+                _mainCamera.ScreenPointToRay(rect.max),
+                _mainCamera.ScreenPointToRay(new Vector2(rect.xMin, rect.yMax)),
+                _mainCamera.ScreenPointToRay(new Vector2(rect.xMax, rect.yMin))
+            };
+
+            var vertices = new NativeArray<float3>(8, Allocator.Temp);
+
+            for (int i = 0, j = 0; i < 8; i += 2, j++)
+            {
+                vertices[i] = cornerRays[j].origin;
+                vertices[i + 1] = cornerRays[j].GetPoint(100f);
+            }
+
+            var collisionFilter = new CollisionFilter
+            {
+                BelongsTo = (uint) CollisionLayers.Selection,
+                CollidesWith = (uint) CollisionLayers.Units
+            };
+            
+            var physicsMaterial = Unity.Physics.Material.Default;
+            physicsMaterial.CollisionResponse = CollisionResponsePolicy.RaiseTriggerEvents;
+
+            var selectionCollider = ConvexCollider.Create(vertices, ConvexHullGenerationParameters.Default,
+                collisionFilter, physicsMaterial);
+
+            var newSelectionEntity = EntityManager.CreateEntity(_selectionArchetype);
+            EntityManager.SetComponentData(newSelectionEntity, new PhysicsCollider{Value = selectionCollider});
         }
 
         private void SelectSingleUnit()
@@ -71,6 +137,11 @@ namespace TMG.UnitSelection
                 }
             };
             return _collisionWorld.CastRay(raycastInput, out raycastHit);
+        }
+
+        private void DeselectUnits()
+        {
+            EntityManager.RemoveComponent<SelectedEntityTag>(GetEntityQuery(typeof(SelectedEntityTag)));
         }
     }
 }

@@ -9,7 +9,7 @@ namespace TMG.UnitSelection_Master
         public Entity SelectionUI;
     }
     
-    [UpdateAfter(typeof(UnitSelectionSystem))]
+    //[UpdateAfter(typeof(UnitSelectionSystem))]
     public class SpawnSelectionRingSystem : SystemBase
     {
         private SelectionUIPrefab _selectionUIPrefab;
