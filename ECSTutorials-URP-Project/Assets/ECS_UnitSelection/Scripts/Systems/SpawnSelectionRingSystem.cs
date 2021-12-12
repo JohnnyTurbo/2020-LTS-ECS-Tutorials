@@ -31,12 +31,12 @@ namespace TMG.UnitSelection
                 .ForEach((Entity selectedEntity) =>
                 {
                     var selectionUI = ecb.Instantiate(selectionPrefab);
-                    var newShadowStateData = new SelectionRingStateData()
+                    var newSelectionStateData = new SelectionRingStateData()
                     {
                         SelectionUI = selectionUI
                     };
                     ecb.AddComponent<SelectionRingStateData>(selectedEntity);
-                    ecb.SetComponent(selectedEntity, newShadowStateData);
+                    ecb.SetComponent(selectedEntity, newSelectionStateData);
                     ecb.AddComponent<Parent>(selectionUI);
                     ecb.SetComponent(selectionUI, new Parent{Value = selectedEntity});
                     ecb.AddComponent<LocalToParent>(selectionUI);
@@ -60,9 +60,9 @@ namespace TMG.UnitSelection
             var ecb = _endSimulationEntityCommandBufferSystem.CreateCommandBuffer();
             Entities
                 .WithNone<SelectedEntityTag>()
-                .ForEach((Entity e, in SelectionRingStateData shadowStateData) =>
+                .ForEach((Entity e, in SelectionRingStateData selectionStateData) =>
                 {
-                    ecb.DestroyEntity(shadowStateData.SelectionUI);
+                    ecb.DestroyEntity(selectionStateData.SelectionUI);
                     ecb.RemoveComponent<SelectionRingStateData>(e);
                 }).Run();
         }

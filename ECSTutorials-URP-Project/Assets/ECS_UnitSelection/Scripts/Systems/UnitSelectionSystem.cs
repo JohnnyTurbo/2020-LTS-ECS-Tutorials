@@ -28,15 +28,13 @@ namespace TMG.UnitSelection
 
         protected override void OnCreate()
         {
+            _mainCamera = Camera.main;
+            _physicsWorldSystem = World.GetExistingSystem<BuildPhysicsWorld>();
+            
             _selectionArchetype = EntityManager.CreateArchetype(typeof(PhysicsCollider), typeof(LocalToWorld),
                 typeof(SelectionColliderTag));
         }
 
-        protected override void OnStartRunning()
-        {
-            _mainCamera = Camera.main;
-        }
-        
         protected override void OnUpdate()
         {
             if (Input.GetMouseButtonDown(0))
@@ -71,7 +69,6 @@ namespace TMG.UnitSelection
 
         private void SelectSingleUnit()
         {
-            _physicsWorldSystem = World.GetExistingSystem<BuildPhysicsWorld>();
             _collisionWorld = _physicsWorldSystem.PhysicsWorld.CollisionWorld;
 
             var ray = _mainCamera.ScreenPointToRay(_mouseEndPos);
