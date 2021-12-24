@@ -82,14 +82,15 @@ namespace TMG.UnitSelection
                 _mainCamera.ScreenPointToRay(new Vector2(rect.xMax, rect.yMin))
             };
 
-            var vertices = new NativeArray<float3>(8, Allocator.Temp);
+            var vertices = new NativeArray<float3>(5, Allocator.Temp);
 
-            for (int i = 0, j = 0; i < 8; i += 2, j++)
+            for (var i = 0; i < cornerRays.Length; i++)
             {
-                vertices[i] = cornerRays[j].origin;
-                vertices[i + 1] = cornerRays[j].GetPoint(100f);
+                vertices[i] = cornerRays[i].GetPoint(50f);
             }
 
+            vertices[4] = _mainCamera.transform.position;
+            
             var collisionFilter = new CollisionFilter
             {
                 BelongsTo = (uint) CollisionLayers.Selection,

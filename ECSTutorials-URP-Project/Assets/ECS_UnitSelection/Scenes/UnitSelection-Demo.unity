@@ -767,7 +767,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh25062
+  m_Name: pb_Mesh25108
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -1327,13 +1327,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1662255628}
-  m_LocalRotation: {x: 0.13888377, y: 0.45814592, z: -0.07272366, w: 0.8749428}
-  m_LocalPosition: {x: 2.86, y: 5.75, z: 5.35}
+  m_LocalRotation: {x: 0.19705768, y: 0.45226017, z: -0.10318524, w: 0.8637025}
+  m_LocalPosition: {x: 6.83, y: 4.62, z: 4.83}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 18.039, y: 55.276, z: 0}
+  m_LocalEulerAnglesHint: {x: 25.705, y: 55.276, z: 0}
 --- !u!114 &1662255632
 MonoBehaviour:
   m_ObjectHideFlags: 0
