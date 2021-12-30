@@ -6,7 +6,7 @@ namespace TMG.ECS_CommandBuffer
     public class SpawnEntitiesSystem : SystemBase
     {
         private EndSimulationEntityCommandBufferSystem _endSimulationEntityCommandBufferSystem;
-
+        
         protected override void OnCreate()
         {
             _endSimulationEntityCommandBufferSystem = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
@@ -15,8 +15,8 @@ namespace TMG.ECS_CommandBuffer
         protected override void OnUpdate()
         {
             var ecb = _endSimulationEntityCommandBufferSystem.CreateCommandBuffer().AsParallelWriter();
-
             var deltaTime = Time.DeltaTime;
+            
             Entities.WithAll<ShouldSpawnTag>().ForEach((Entity e, int entityInQueryIndex, ref EntitySpawnData spawnData, 
                 in Translation translation) =>
             {
@@ -29,7 +29,6 @@ namespace TMG.ECS_CommandBuffer
                     ecb.SetComponent(entityInQueryIndex, newEntity, translation);
                 }
             }).ScheduleParallel();
-            Dependency.Complete(); // Runs job right then and there. Creates additional sync point
             _endSimulationEntityCommandBufferSystem.AddJobHandleForProducer(this.Dependency);
         }
     }

@@ -7,7 +7,6 @@ namespace TMG.ECS_CommandBuffer
     public class SpawnerControlSystem : SystemBase
     {
         private EndInitializationEntityCommandBufferSystem _endInitializationEntityCommandBufferSystem;
-
         protected override void OnCreate()
         {
             _endInitializationEntityCommandBufferSystem =

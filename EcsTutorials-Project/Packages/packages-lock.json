@@ -32,11 +32,12 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.collab-proxy": {
-      "version": "1.5.7",
+      "version": "1.15.4",
       "depth": 0,
       "source": "registry",
       "dependencies": {
-        "com.unity.nuget.newtonsoft-json": "2.0.0"
+        "com.unity.nuget.newtonsoft-json": "2.0.0",
+        "com.unity.services.core": "1.0.1"
       },
       "url": "https://packages.unity.com"
     },
@@ -47,6 +48,21 @@
       "dependencies": {
         "com.unity.test-framework.performance": "2.3.1-preview",
         "com.unity.burst": "1.4.1"
+      },
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.dots.editor": {
+      "version": "0.12.0-preview.6",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.entities": "0.17.0-preview.41",
+        "com.unity.properties": "1.6.0-preview",
+        "com.unity.serialization": "1.6.1-preview",
+        "com.unity.properties.ui": "1.6.1-preview",
+        "com.unity.jobs": "0.8.0-preview.23",
+        "com.unity.burst": "1.4.1",
+        "com.unity.test-framework.performance": "2.3.1-preview"
       },
       "url": "https://packages.unity.com"
     },
@@ -86,7 +102,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.ide.visualstudio": {
-      "version": "2.0.8",
+      "version": "2.0.12",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -95,7 +111,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.ide.vscode": {
-      "version": "1.2.3",
+      "version": "1.2.4",
       "depth": 0,
       "source": "registry",
       "dependencies": {},
@@ -174,7 +190,7 @@
     },
     "com.unity.properties": {
       "version": "1.6.0-preview",
-      "depth": 3,
+      "depth": 1,
       "source": "registry",
       "dependencies": {
         "com.unity.nuget.mono-cecil": "0.1.6-preview.2",
@@ -222,6 +238,15 @@
       },
       "url": "https://packages.unity.com"
     },
+    "com.unity.services.core": {
+      "version": "1.0.1",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.modules.unitywebrequest": "1.0.0"
+      },
+      "url": "https://packages.unity.com"
+    },
     "com.unity.settings-manager": {
       "version": "1.0.3",
       "depth": 1,
@@ -230,7 +255,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.test-framework": {
-      "version": "1.1.24",
+      "version": "1.1.29",
       "depth": 0,
       "source": "registry",
       "dependencies": {
