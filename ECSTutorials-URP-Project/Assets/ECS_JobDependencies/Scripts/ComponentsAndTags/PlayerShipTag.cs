@@ -3,5 +3,5 @@
 namespace TMG.JobDependencies 
 {
     [GenerateAuthoringComponent]
-    public struct PlayerConeTag : IComponentData {}
+    public struct PlayerShipTag : IComponentData {}
 }

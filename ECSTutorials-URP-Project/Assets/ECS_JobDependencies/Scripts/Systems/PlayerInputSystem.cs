@@ -1,7 +1,7 @@
-﻿using Unity.Entities;
+﻿using Unity.Collections;
+using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
-using Unity.Rendering;
 using Unity.Transforms;
 using UnityEngine;
 
@@ -15,7 +15,6 @@ namespace TMG.JobDependencies
         
         protected override void OnStartRunning()
         {
-            _inputData = GetSingleton<PlayerInputData>();
             _controlData = GetSingleton<PlayerControlData>();
         }
 
@@ -43,20 +42,47 @@ namespace TMG.JobDependencies
     [UpdateAfter(typeof(PlayerInputSystem))]
     public class MovementSystem : SystemBase
     {
-        public JobHandle CurrentJobHandle;
-        
         protected override void OnUpdate()
         {
             var deltaTime = Time.DeltaTime;
-            Entities.ForEach((ref Translation translation, in LocalToWorld localToWorld, in PlayerInputData inputData) =>
+            var shipLocalToWorld = new NativeArray<LocalToWorld>(1, Allocator.TempJob);
+            
+            var rotationHandle = Entities.ForEach((ref Rotation rotation, in PlayerInputData inputData) =>
             {
-                translation.Value += (localToWorld.Forward * inputData.MovementThisFrame * deltaTime);
-            }).Schedule();
+                rotation.Value = 
+                    math.mul(rotation.Value, quaternion.RotateY(math.radians(inputData.RotationThisFrame * deltaTime)));
+                shipLocalToWorld[0] = new LocalToWorld {Value = float4x4.TRS(float3.zero, rotation.Value, Vector3.one)};
+            }).Schedule(Dependency);
 
-            Entities.ForEach((ref Rotation rotation, in LocalToWorld localToWorld, in PlayerInputData inputData) =>
+            var translationDependencies = JobHandle.CombineDependencies(Dependency, rotationHandle);
+            
+            var translationHandle = Entities.ForEach((ref Translation translation, in PlayerInputData inputData) =>
             {
-                rotation.Value = math.mul(rotation.Value, quaternion.RotateY(math.radians(inputData.RotationThisFrame * deltaTime)));
-            }).Schedule();
+                translation.Value += (shipLocalToWorld[0].Forward * inputData.MovementThisFrame * deltaTime);
+            }).Schedule(translationDependencies);
+            
+            translationHandle.Complete();
+        }
+    }
+
+    [UpdateInGroup(typeof(SimulationSystemGroup), OrderLast = true)]
+    [UpdateAfter(typeof(MovementSystem))]
+    public class CheckDistanceToTargetSystem : SystemBase
+    {
+        protected override void OnUpdate()
+        {
+            var playerEntity = GetSingletonEntity<PlayerInputData>();
+            var playerPosition = EntityManager.GetComponentData<Translation>(playerEntity);
+            
+            Entities
+                .WithAll<TargetSingletonTag>()
+                .ForEach((ref Translation translation, ref RandomPosition randomPosition) =>
+                {
+                    if (math.distance(translation.Value, playerPosition.Value) <= 1.25f)
+                    {
+                        translation.Value = randomPosition.NextPosition;
+                    }
+                }).Schedule();
         }
     }
 
@@ -64,27 +90,30 @@ namespace TMG.JobDependencies
     [UpdateAfter(typeof(MovementSystem))]
     public class ColorSystem : SystemBase
     {
+        private Entity _targetEntity;
+
+        protected override void OnStartRunning()
+        {
+            _targetEntity = GetSingletonEntity<TargetSingletonTag>();
+        }
+
         protected override void OnUpdate()
         {
+            var targetPosition = EntityManager.GetComponentData<Translation>(_targetEntity);
             Entities
-                .WithAll<PlayerConeTag>()
-                .WithStructuralChanges()
-                .ForEach((Entity e, RenderMesh renderMesh, in LocalToWorld localToWorld) =>
+                .WithAll<PlayerShipTag>()
+                .ForEach((Entity e, ref ShipColorData coneColor, in LocalToWorld localToWorld) =>
                 {
-                    var forward = localToWorld.Up;
-                    forward = math.normalize(forward);
-                    var toOrigin = float3.zero - localToWorld.Position;
-                    toOrigin = math.normalize(toOrigin);
-                    var dot = math.dot(forward, toOrigin);
-                    dot = (dot + 1f) / 2f;
-                    var hue = math.lerp(0f, 120f, dot);
-                    hue /= 360f;
-                    renderMesh.material.color = Color.HSVToRGB(hue, 1f, 1f);
-                    EntityManager.SetSharedComponentData(e, renderMesh);
-                }).WithoutBurst().Run();
+                    var shipForwardDirection = math.normalize(localToWorld.Up);
+                    var playerToTargetDirection = math.normalize(targetPosition.Value - localToWorld.Position);
+                    var dot = math.clamp(math.dot(shipForwardDirection, playerToTargetDirection), 0, 1);
+                    var hue = math.lerp(0f, 120f, dot) / 360f;
+                    var newCol = Color.HSVToRGB(hue, 1f, 1f);
+                    coneColor.Value = new float4(newCol.r, newCol.g, newCol.b, newCol.a);
+                }).Schedule();
         }
     }
-    
+
     [UpdateInGroup(typeof(SimulationSystemGroup), OrderLast = true)]
     [UpdateAfter(typeof(ColorSystem))]
     public class ResetPlayerInputSystem : SystemBase
@@ -93,7 +122,7 @@ namespace TMG.JobDependencies
 
         protected override void OnStartRunning()
         {
-            _defaultInputData.MovementThisFrame = 0f;
+            _defaultInputData.MovementThisFrame = 2.5f;
             _defaultInputData.RotationThisFrame = 0f;
         }
 
