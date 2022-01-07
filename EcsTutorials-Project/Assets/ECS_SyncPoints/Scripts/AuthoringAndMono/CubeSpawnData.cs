@@ -1,11 +1,12 @@
 ﻿using Unity.Entities;
+using Unity.Mathematics;
 
-namespace TMG.SyncPoints
+namespace ECS_SyncPoints.Scripts.AuthoringAndMono
 {
     [GenerateAuthoringComponent]
     public struct CubeSpawnData : IComponentData
     {
         public Entity CubePrefab;
-        public int NumberToSpawn;
+        public int2 SpawnGridSize;
     }
 }
