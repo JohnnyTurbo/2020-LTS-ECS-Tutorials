@@ -110,7 +110,7 @@ namespace TMG.JobDependencies
                     var hue = math.lerp(0f, 120f, dot) / 360f;
                     var newCol = Color.HSVToRGB(hue, 1f, 1f);
                     coneColor.Value = new float4(newCol.r, newCol.g, newCol.b, newCol.a);
-                }).Schedule();
+                }).Run();
         }
     }
 
