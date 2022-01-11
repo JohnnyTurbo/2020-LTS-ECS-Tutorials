@@ -10,58 +10,104 @@ namespace TMG.JobDependencies
     [UpdateInGroup(typeof(SimulationSystemGroup), OrderFirst = true)]
     public class PlayerInputSystem : SystemBase
     {
-        private PlayerInputData _inputData;
         private PlayerControlData _controlData;
         
         protected override void OnStartRunning()
         {
             _controlData = GetSingleton<PlayerControlData>();
+            
         }
 
         protected override void OnUpdate()
         {
-            _inputData = GetSingleton<PlayerInputData>();
+            var newInputData = new PlayerInputData
+            {
+                MovementThisFrame = 2.5f,
+                RotationThisFrame = 0f
+            };
+            
             if (Input.GetKey(_controlData.ForwardKey))
             {
-                _inputData.MovementThisFrame = 5f;
+                newInputData.MovementThisFrame = 5f;
             }
 
-            if(Input.GetKey(_controlData.LeftRotationKey))
+            if (Input.GetKey(_controlData.LeftRotationKey))
             {
-                _inputData.RotationThisFrame = -50f;
+                newInputData.RotationThisFrame = -50f;
             }
-            else if(Input.GetKey(_controlData.RightRotationKey))
+            else if (Input.GetKey(_controlData.RightRotationKey))
             {
-                _inputData.RotationThisFrame = 50f;
+                newInputData.RotationThisFrame = 50f;
             }
-            SetSingleton(_inputData);
+            
+            Entities.ForEach((ref PlayerInputData inputData) =>
+            {
+                inputData = newInputData;
+            }).Schedule();
         }
     }
-
+    
     [UpdateInGroup(typeof(SimulationSystemGroup), OrderFirst = true)]
     [UpdateAfter(typeof(PlayerInputSystem))]
-    public class MovementSystem : SystemBase
+    public class RotationSystem : SystemBase
     {
+        public JobHandle RotationHandle { get; private set; }
+        
+        private EntityQuery _shipQuery;
+        private PlayerLTWData _ltwData;
+        
+        protected override void OnStartRunning()
+        {
+            var controlEntity = GetSingletonEntity<PlayerControlData>();
+            _ltwData = EntityManager.GetComponentData<PlayerLTWData>(controlEntity);
+            _ltwData.Value = new NativeArray<LocalToWorld>(_shipQuery.CalculateEntityCount(), Allocator.Persistent);
+        }
+
         protected override void OnUpdate()
         {
             var deltaTime = Time.DeltaTime;
-            var shipLocalToWorld = new NativeArray<LocalToWorld>(1, Allocator.TempJob);
+            var shipLocalToWorld = _ltwData.Value;
             
-            var rotationHandle = Entities.ForEach((ref Rotation rotation, in PlayerInputData inputData) =>
-            {
-                rotation.Value = 
-                    math.mul(rotation.Value, quaternion.RotateY(math.radians(inputData.RotationThisFrame * deltaTime)));
-                shipLocalToWorld[0] = new LocalToWorld {Value = float4x4.TRS(float3.zero, rotation.Value, Vector3.one)};
-            }).Schedule(Dependency);
+            RotationHandle = Entities
+                .WithStoreEntityQueryInField(ref _shipQuery)
+                .ForEach((Entity e, int entityInQueryIndex, ref Rotation rotation, in PlayerInputData inputData) =>
+                {
+                    rotation.Value = math.mul(rotation.Value,
+                        quaternion.RotateY(math.radians(inputData.RotationThisFrame * deltaTime)));
+                    
+                    shipLocalToWorld[entityInQueryIndex] = new LocalToWorld
+                    {
+                        Value = float4x4.TRS(float3.zero, rotation.Value, Vector3.one)
+                    };
+                }).Schedule(Dependency);
+            Dependency = JobHandle.CombineDependencies(Dependency, RotationHandle);
+        }
+    }
+    
+    [UpdateInGroup(typeof(SimulationSystemGroup), OrderFirst = true)]
+    [UpdateAfter(typeof(RotationSystem))]
+    public class MovementSystem : SystemBase
+    {
+        private PlayerLTWData _ltwData;
+        
+        protected override void OnStartRunning()
+        {
+            var controlEntity = GetSingletonEntity<PlayerControlData>();
+            _ltwData = EntityManager.GetComponentData<PlayerLTWData>(controlEntity);
+        }
 
-            var translationDependencies = JobHandle.CombineDependencies(Dependency, rotationHandle);
-            
-            var translationHandle = Entities.ForEach((ref Translation translation, in PlayerInputData inputData) =>
+        protected override void OnUpdate()
+        {
+            var deltaTime = Time.DeltaTime;
+            var shipLocalToWorld = _ltwData.Value;
+            var rotationHandle = World.GetOrCreateSystem<RotationSystem>().RotationHandle;
+
+            Dependency = Entities.ForEach((Entity e, int entityInQueryIndex, ref Translation translation, 
+                in PlayerInputData inputData) =>
             {
-                translation.Value += (shipLocalToWorld[0].Forward * inputData.MovementThisFrame * deltaTime);
-            }).Schedule(translationDependencies);
-            
-            translationHandle.Complete();
+                translation.Value += (shipLocalToWorld[entityInQueryIndex].Forward * inputData.MovementThisFrame *
+                                      deltaTime);
+            }).Schedule(rotationHandle);
         }
     }
 
@@ -69,23 +115,37 @@ namespace TMG.JobDependencies
     [UpdateAfter(typeof(MovementSystem))]
     public class CheckDistanceToTargetSystem : SystemBase
     {
+        private EndSimulationEntityCommandBufferSystem _endSimulationECBSystem;
+
+        protected override void OnStartRunning()
+        {
+            _endSimulationECBSystem = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
+        }
+        
         protected override void OnUpdate()
         {
-            var playerEntity = GetSingletonEntity<PlayerInputData>();
-            var playerPosition = EntityManager.GetComponentData<Translation>(playerEntity);
+            var ecb = _endSimulationECBSystem.CreateCommandBuffer();
             
+            var targetEntity = GetSingletonEntity<TargetSingletonTag>();
+            var targetPosition = EntityManager.GetComponentData<Translation>(targetEntity);
+            var targetRandomPosition = EntityManager.GetComponentData<RandomPosition>(targetEntity);
+
             Entities
-                .WithAll<TargetSingletonTag>()
-                .ForEach((ref Translation translation, ref RandomPosition randomPosition) =>
+                .WithAll<PlayerParentTag>()
+                .ForEach((Entity e, in LocalToWorld localToWorld) =>
                 {
-                    if (math.distance(translation.Value, playerPosition.Value) <= 1.25f)
+                    if (math.distance(localToWorld.Position, targetPosition.Value) <= 1.25f)
                     {
-                        translation.Value = randomPosition.NextPosition;
+                        targetPosition.Value = targetRandomPosition.NextPosition;
+                        ecb.SetComponent(targetEntity, targetPosition);
+                        ecb.SetComponent(targetEntity, targetRandomPosition);
                     }
                 }).Schedule();
+            //Dependency.Complete();
+            _endSimulationECBSystem.AddJobHandleForProducer(Dependency);
         }
     }
-
+    
     [UpdateInGroup(typeof(SimulationSystemGroup), OrderLast = true)]
     [UpdateAfter(typeof(MovementSystem))]
     public class ColorSystem : SystemBase
@@ -110,25 +170,7 @@ namespace TMG.JobDependencies
                     var hue = math.lerp(0f, 120f, dot) / 360f;
                     var newCol = Color.HSVToRGB(hue, 1f, 1f);
                     coneColor.Value = new float4(newCol.r, newCol.g, newCol.b, newCol.a);
-                }).Run();
-        }
-    }
-
-    [UpdateInGroup(typeof(SimulationSystemGroup), OrderLast = true)]
-    [UpdateAfter(typeof(ColorSystem))]
-    public class ResetPlayerInputSystem : SystemBase
-    {
-        private PlayerInputData _defaultInputData;
-
-        protected override void OnStartRunning()
-        {
-            _defaultInputData.MovementThisFrame = 2.5f;
-            _defaultInputData.RotationThisFrame = 0f;
-        }
-
-        protected override void OnUpdate()
-        {
-            SetSingleton(_defaultInputData);
+                }).Schedule();
         }
     }
 }
