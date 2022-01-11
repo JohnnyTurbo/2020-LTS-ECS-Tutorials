@@ -1,7 +1,7 @@
 ﻿using Unity.Entities;
 using Unity.Mathematics;
 
-namespace ECS_SyncPoints.Scripts.AuthoringAndMono
+namespace TMG.SyncPoints
 {
     [GenerateAuthoringComponent]
     public struct CubeSpawnData : IComponentData

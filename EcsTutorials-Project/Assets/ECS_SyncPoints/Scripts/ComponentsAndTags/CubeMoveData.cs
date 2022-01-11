@@ -1,6 +1,6 @@
 ﻿using Unity.Entities;
 
-namespace ECS_SyncPoints.Scripts.AuthoringAndMono
+namespace TMG.SyncPoints
 {
     [GenerateAuthoringComponent]
     public struct CubeMoveData : IComponentData
