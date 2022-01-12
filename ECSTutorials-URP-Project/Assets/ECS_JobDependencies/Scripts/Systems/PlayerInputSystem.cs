@@ -67,7 +67,7 @@ namespace TMG.JobDependencies
         {
             var deltaTime = Time.DeltaTime;
             var shipLocalToWorld = _ltwData.Value;
-            
+
             RotationHandle = Entities
                 .WithStoreEntityQueryInField(ref _shipQuery)
                 .ForEach((Entity e, int entityInQueryIndex, ref Rotation rotation, in PlayerInputData inputData) =>
@@ -100,8 +100,9 @@ namespace TMG.JobDependencies
         {
             var deltaTime = Time.DeltaTime;
             var shipLocalToWorld = _ltwData.Value;
-            var rotationHandle = World.GetOrCreateSystem<RotationSystem>().RotationHandle;
 
+            var rotationHandle = World.GetOrCreateSystem<RotationSystem>().RotationHandle;
+            
             Dependency = Entities.ForEach((Entity e, int entityInQueryIndex, ref Translation translation, 
                 in PlayerInputData inputData) =>
             {
@@ -142,6 +143,7 @@ namespace TMG.JobDependencies
                     }
                 }).Schedule();
             //Dependency.Complete();
+            //CompleteDependency();
             _endSimulationECBSystem.AddJobHandleForProducer(Dependency);
         }
     }
