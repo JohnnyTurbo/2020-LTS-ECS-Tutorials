@@ -44,10 +44,9 @@ namespace TMG.SyncPoints
             var curTime = Time.ElapsedTime;
             Entities.ForEach((ref Translation translation, in CubeMoveData cubeMoveData) =>
             {
-                var magnitude = 1f;
-                var frequency = 1f;
+                var frequency = cubeMoveData.MoveSpeed;
                 var thisTime = curTime + translation.Value.x * 0.1f;
-                translation.Value.y = magnitude * (float) math.sin(thisTime * frequency) + magnitude + 1f;
+                translation.Value.y = (float) math.sin(thisTime * frequency) + 2f;
             }).Schedule();
         }
     }
@@ -60,22 +59,20 @@ namespace TMG.SyncPoints
         
         protected override void OnStartRunning()
         {
-            _endSimulationECBSystem = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
             _firstCubeEntity = GetSingletonEntity<FirstCubeTag>();
+            _endSimulationECBSystem = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
         }
 
         protected override void OnUpdate()
         {
-            //var ecb = _endSimulationECBSystem.CreateCommandBuffer();
+            var ecb = _endSimulationECBSystem.CreateCommandBuffer();
             if (EntityManager.HasComponent<SyncPointTag>(_firstCubeEntity))
             {
-                EntityManager.RemoveComponent<SyncPointTag>(_firstCubeEntity);
-                //ecb.RemoveComponent<SyncPointTag>(_firstCubeEntity);
+                ecb.RemoveComponent<SyncPointTag>(_firstCubeEntity);
             }
             else
             {
-                EntityManager.AddComponent<SyncPointTag>(_firstCubeEntity);
-                //ecb.AddComponent<SyncPointTag>(_firstCubeEntity);
+                ecb.AddComponent<SyncPointTag>(_firstCubeEntity);
             }
         }
     }
