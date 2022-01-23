@@ -1,4 +1,5 @@
 ﻿using Unity.Entities;
+using Unity.Mathematics;
 
 namespace TMG.SyncPoints
 {
@@ -6,6 +7,6 @@ namespace TMG.SyncPoints
     public struct CubeSpawnData : IComponentData
     {
         public Entity CubePrefab;
-        public int NumberToSpawn;
+        public int2 SpawnGridSize;
     }
 }

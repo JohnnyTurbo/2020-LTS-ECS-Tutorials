@@ -3,8 +3,9 @@
 namespace TMG.SyncPoints
 {
     [GenerateAuthoringComponent]
-    public struct MoveData : IComponentData
+    public struct CubeMoveData : IComponentData
     {
+        public float RotationSpeed;
         public float MoveSpeed;
     }
 }
